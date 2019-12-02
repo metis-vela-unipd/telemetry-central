@@ -1,5 +1,5 @@
 # Telemetry Central Unit
-Centralina di acquisizione, comunicazione e memorizzazione dei dati da parte dei sensori montati nei diversi punti dell'imbarcazione.
-Sensori attuali:
+Central unit for acquisition, communication and memorization of data coming from sensors mounted in different places of the sailboat.
+Actual sensors:
 - GPS
-- Anemometro
+- Wind sensor
