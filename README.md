@@ -14,7 +14,6 @@ To install the files in the appropiate folder:
 
 Repo Folder | R-Pi Folder
 ----|----
-`system/` | `/etc/systemd/system/`
 `autostart/` | `/home/pi/.config/autostart`
 `bin/` | `/home/pi/bin`
 `default/` | `/etc/default`
