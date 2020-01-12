@@ -107,4 +107,4 @@ venv.bak/
 .DS_Store
 
 # Vscode .vscode folder
-.vscode/
+.vscode
