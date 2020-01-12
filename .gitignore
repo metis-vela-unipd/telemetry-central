@@ -105,3 +105,6 @@ venv.bak/
 
 # macOS annoying .DS_Store
 .DS_Store
+
+# Vscode .vscode folder
+.vscode
