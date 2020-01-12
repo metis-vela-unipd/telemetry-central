@@ -3,3 +3,18 @@ Central unit for acquisition, communication and memorization of data coming from
 Actual sensors:
 - GPS
 - Wind sensor
+
+# Installation
+
+The folder structure of this repos maps each folder to a folder on the raspberry pi.
+
+`<pi-folder>/filename`
+
+To install the files in the appropiate folder:
+
+Repo Folder | R-Pi Folder
+----|----
+`system/` | `/etc/systemd/system/`
+`autostart/` | `/home/pi/.config/autostart`
+`bin/` | `/home/pi/bin`
+`default/` | `/etc/default`
