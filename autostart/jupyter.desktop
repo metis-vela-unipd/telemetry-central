@@ -1,5 +1,0 @@
-[Desktop Entry]
-Type=Daemon
-Name=Jupyter
-Exec=/home/pi/MètisVela/env/bin/jupyterlab --ip=192.168.1.132
-WorkingDirectory=/home/pi

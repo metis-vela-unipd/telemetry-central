@@ -1,0 +1,13 @@
+[Unit]
+Description=Jupyter Lab
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/pi/MètisVela/env/bin/jupyter lab --ip=192.168.4.1
+WorkingDirectory=/home/pi
+Restart=on-failure
+User=pi
+
+[Install]
+WantedBy=multi-user.target
