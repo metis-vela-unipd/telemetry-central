@@ -17,3 +17,4 @@ Repo Folder | R-Pi Folder
 `autostart/` | `/home/pi/.config/autostart`
 `bin/` | `/home/pi/bin`
 `default/` | `/etc/default`
+`system/` | `/etc/systemd/system/`
