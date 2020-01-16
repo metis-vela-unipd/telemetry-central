@@ -12,6 +12,9 @@ sudo apt-get install gpsd gpsd-clients
 ```
 If you have problem with the installation of gpsd please refer [here](https://gpsd.gitlab.io/gpsd/installation.html).
 
+## Using the installer
+
+## The manual way
 The folder structure of this repos maps each folder to a folder on the Raspberry Pi following this pattern:
 ```
 <pi-folder>/filename
