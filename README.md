@@ -19,7 +19,14 @@ All the saved logs can be simply mapped with some online visualizer, like [GPS V
 More information about the behaviour of the system can be found in the [Central Wiki](https://github.com/metis-vela-unipd/telemetry-documentation/wiki).
 
 # Installation Instructions (Raspbian)
-The folder structure of this repos maps each folder to a folder on the Raspberry Pi following this pattern:
+### Using the installer
+Simply run the `install.sh` script in the root folder of the repository:
+```
+./install.sh
+```
+
+### The manual way
+If the installer method doesn't work it's still possible to try with the manual way. The folder structure of this repos maps each folder to a folder on the Raspberry Pi following this pattern:
 ```
 <pi-folder>/filename
 ```
