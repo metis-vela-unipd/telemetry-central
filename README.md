@@ -19,13 +19,6 @@ All the saved logs can be simply mapped with some online visualizer, like [GPS V
 More information about the behaviour of the system can be found in the [Central Wiki](https://github.com/metis-vela-unipd/telemetry-documentation/wiki).
 
 # Installation Instructions (Raspbian)
-First of all, you need to install a daemon to communicate with the GPS module.
-We use [gpsd](https://gpsd.gitlab.io/gpsd/index.html), it can be installed with the following line:
-```
-sudo apt-get install gpsd gpsd-clients
-```
-If you have problem with the installation of gpsd please refer [here](https://gpsd.gitlab.io/gpsd/installation.html).
-
 The folder structure of this repos maps each folder to a folder on the Raspberry Pi following this pattern:
 ```
 <pi-folder>/filename
