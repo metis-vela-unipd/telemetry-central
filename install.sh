@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Autostart folder
+# autostart files
 cp -RT autostart/ /home/pi/.config/autostart
 
 # shell scripts
@@ -11,6 +11,9 @@ sudo cp -RT default/ /etc/default
 
 # sytemd services
 sudo cp -RT system/ /etc/systemd/system
+
+# wallpaper image
+sudo cp -RT Pictures/ /home/pi/Pictures
 
 # enable all services
 for service in system/*.service; do
