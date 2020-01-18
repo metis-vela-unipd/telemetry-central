@@ -22,7 +22,7 @@ More information about the behaviour of the system can be found in the [Central 
 ### Using the installer
 Simply run the `install.sh` script in the root folder of the repository:
 ```
-./install.sh
+sudo bash install.sh
 ```
 
 ### The manual way
