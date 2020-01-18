@@ -41,3 +41,4 @@ autostart/  | /home/pi/.config/autostart
 bin/        | /home/pi/bin
 default/    | /etc/default
 system/     | /etc/systemd/system/
+Pictures/   | /home/pi/Pictures
