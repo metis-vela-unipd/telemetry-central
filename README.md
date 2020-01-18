@@ -15,7 +15,9 @@ To stop the logging process, run:
 ```
 stoplog
 ```
-All the saved logs can be simply mapped with some online visualizer, like [GPS Visualizer](https://www.gpsvisualizer.com). This repo comes also with a cool wallpaper placed in the Pictures folder.
+All the saved logs can be simply mapped with some online visualizer, like [GPS Visualizer](https://www.gpsvisualizer.com).
+
+This repo comes also with a cool wallpaper placed in the Pictures folder.
 
 More information about the behaviour of the system can be found in the [Central Wiki](https://github.com/metis-vela-unipd/telemetry-documentation/wiki).
 
