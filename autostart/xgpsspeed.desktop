@@ -1,4 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Speedometer
-Exec=/usr/bin/xgpsspeed --speedunits=knots --maxspeed=20
