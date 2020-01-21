@@ -2,12 +2,16 @@
 
 status=$?
 
-# autostart files
-cp -RT autostart/ /home/pi/.config/autostart
+# support files
+cp -RT opt/ /opt
 status+=$?
 
 # shell scripts
-cp -RT bin/ /home/pi/bin
+cp -RT bin/ /usr/local/bin
+status+=$?
+
+# autostart files
+cp -RT autostart/ /etc/xdg/autostart
 status+=$?
 
 # gpsd settings
