@@ -1,15 +1,15 @@
 from gpsd import Gpsd
 from dashboard import Dashboard
 
-# start the data provider thread (actually is only the gpsd thread)
+# Start the data provider thread (actually is only the gpsd thread)
 provider = Gpsd()
 provider.start()
 
-# start the dashboard thread
+# Start the dashboard thread
 dashboard = Dashboard(provider)
 dashboard.start()
 
-# watch threads and try recovery when needed, terminate program when KeyboardInterrupt is caught
+# Watch threads and try recovery when needed, terminate program when KeyboardInterrupt is caught
 while True:
     try:
         if not provider.is_alive():
