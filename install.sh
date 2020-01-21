@@ -15,15 +15,15 @@ cp -RT autostart/ /etc/xdg/autostart
 status+=$?
 
 # gpsd settings
-sudo cp -RT default/ /etc/default
+cp -RT default/ /etc/default
 status+=$?
 
 # sytemd services
-sudo cp -RT system/ /etc/systemd/system
+cp -RT system/ /etc/systemd/system
 status+=$?
 
 # wallpaper image
-sudo cp -RT Pictures/ /home/pi/Pictures
+cp -RT Pictures/ /home/pi/Pictures
 status+=$?
 
 # enable all services
