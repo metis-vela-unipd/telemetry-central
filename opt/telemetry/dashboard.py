@@ -4,8 +4,6 @@ from collections import namedtuple
 from PIL import Image, ImageTk
 import os
 
-from gpsd import Gpsd
-
 DashboardTheme = namedtuple('Theme', 'background foreground')
 
 DEFAULT_THEME = DashboardTheme('gray10', 'gray90')
@@ -41,7 +39,7 @@ class Dashboard(Thread):
          - The StatusBar area, where are displayed info about the system status
         """
         self.root = Tk()
-        self.root.configure(bg=self.theme.background)
+        self.root.configure(bg=self.theme.background, cursor='none')
         self.root.attributes('-fullscreen', True)
         self.loadIcons()
         self.setupDisplay()
