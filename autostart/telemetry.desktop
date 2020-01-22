@@ -1,4 +1,5 @@
 [Desktop Entry]
 Type=Application
 Name=Telemetry
-Exec=/usr/local/bin/telemetry
+Exec=telemetry
+Comment[en_US]=Start Metis Telemetry System
