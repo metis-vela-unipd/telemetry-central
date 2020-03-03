@@ -1,4 +1,4 @@
-# Telemetry Raspberry
+# Telemetry for Raspberry Pi
 Central unit for acquisition, communication and memorization of data coming from sensors mounted in different places of the sailboat.
 Actual sensors:
 - GPS
