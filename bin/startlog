@@ -1,9 +1,0 @@
-#!/bin/bash
-
-# startlog - A script to start the logging processes
-
-RIGHT_NOW=$(date +"%Y-%m-%d_%H:%M:%S")
-
-filename=~/logs/gpx/$RIGHT_NOW.gpx
-gpxlogger -d -f $filename
-echo "Started gpxlogger process with output $filename"

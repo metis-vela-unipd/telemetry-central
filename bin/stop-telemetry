@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# stop-telemetry - A script to stop the telemetry system
+
+# kill all running process
+pkill -9 -f telemetry/main.py
+echo "Stopped all telemetry processes"
