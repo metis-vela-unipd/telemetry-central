@@ -1,9 +1,0 @@
-#!/bin/bash
-
-# telemetry - A script to start the Metis Telemetry System
-
-# kill previous running process
-pkill -9 -f telemetry/main.py
-
-# start dashboard
-python3 /opt/telemetry/main.py

@@ -14,12 +14,14 @@
 		cp -RT default/ /etc/default
 	} && {
 		# copy systemd services
-		cp -RT system/ /etc/systemd/system
+		# cp -RT system/ /etc/systemd/system
+		:
 	} && {
 		# enable all services
-		for service in system/*.service; do
-			sudo systemctl enable $(basename $service)
-		done
+		# for service in system/*.service; do
+		# 	sudo systemctl enable $(basename $service)
+		# done
+		:
 	} && {
 		# copy wallpaper image
 		cp -RT Pictures/ /home/pi/Pictures
