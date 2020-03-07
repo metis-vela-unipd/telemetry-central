@@ -9,6 +9,17 @@ provider.start()
 dashboard = Dashboard(provider)
 dashboard.start()
 
+# Wait until all the threads have finished initializing (or exit after timeout)
+provider.end_setup.wait(timeout=20)
+dashboard.end_setup.wait(timeout=20)
+
+if not provider.end_setup.isSet() or not dashboard.end_setup.isSet():
+    print("[main_thread] Something went wrong during threads initialization, quitting...")
+    exit()
+
+# Wait all threads to start
+print("[main_thread] Telemetry system started")
+
 # Watch threads and try recovery when needed, terminate program when KeyboardInterrupt is caught
 while True:
     try:
@@ -16,7 +27,13 @@ while True:
             print("[main_thread] Provider dead, attempting recovery...")
             provider = Gpsd()
             provider.start()
-            dashboard.provider = provider
+            provider.end_setup.wait(timeout=20)
+            if provider.end_setup.isSet():
+                dashboard.provider = provider
+                print("[main_thread] Done recovery")
+            else:
+                print("[main_thread] Recovery failed, quitting...")
+                exit()
     except KeyboardInterrupt:
-        print("[main_thread] KeyboardInterrput caught.")
+        print("[main_thread] KeyboardInterrput caught, quitting...")
         break

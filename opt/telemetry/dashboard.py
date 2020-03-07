@@ -1,5 +1,5 @@
 from tkinter import Tk, Label, Frame, StringVar, LEFT
-from threading import Thread
+from threading import Thread, Event
 from collections import namedtuple
 from PIL import Image, ImageTk
 import os
@@ -19,6 +19,7 @@ class Dashboard(Thread):
         self.theme = theme
         self.font_size = font_size
         self.icons = { }
+        self.end_setup = Event()
 
     def loadIcons(self):
         """ Populate the icons dictionary with all the rendered icons inside the 'icons' directory. """
@@ -94,4 +95,5 @@ class Dashboard(Thread):
         """ Setup the graphics, start the updating process and enter tkinter mainloop. """
         self.setupGUI()
         self.update()
+        self.end_setup.set()
         self.root.mainloop()

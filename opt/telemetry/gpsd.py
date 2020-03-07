@@ -1,5 +1,5 @@
 from gps import gps, WATCH_ENABLE, WATCH_NEWSTYLE, MPS_TO_KNOTS
-from threading import Thread, Timer
+from threading import Thread, Timer, Event
 
 class _TimeoutVar:
     """
@@ -39,9 +39,11 @@ class Gpsd(Thread):
         self.fix = _TimeoutVar(False, 5)
         self.speed = _TimeoutVar(-1, 3)
         self.heading = _TimeoutVar(-1, 3)
+        self.end_setup = Event()
 
     def run(self):
         """ Continuously get gpsd sentences and update variables accordingly. """
+        self.end_setup.set()
         while True:
             try:
                 report = self.session.next()
