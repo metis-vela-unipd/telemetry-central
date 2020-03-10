@@ -3,9 +3,10 @@
 # startlog - A script to start the logging processes
 
 # get current time
-RIGHT_NOW=$(date +"%Y-%m-%d_%H:%M:%S")
+NOW=$(date +"%Y-%m-%d_%H:%M:%S")
 
 # start gpxlogger
-filename=~/logs/gpx/$RIGHT_NOW.gpx
+mkdir -p ~/telemetry-logs/gpx
+filename=~/telemetry-logs/gpx/$NOW.gpx
 gpxlogger -d -f $filename
 echo "Started gpxlogger process with output $filename, use 'stoplog' to stop it"

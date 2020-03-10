@@ -35,6 +35,11 @@ RESET='\033[0m'
 			systemctl enable $(basename $service)
 		done
 	} && {
+		# create console logs directory
+		mkdir -p /var/log/telemetry
+		# grant write permissions to user 'pi'
+		chown pi: /var/log/telemetry
+	} && {
 		# copy wallpaper image
 		cp -RT Pictures/ /home/pi/Pictures
 	} && {

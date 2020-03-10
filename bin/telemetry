@@ -5,5 +5,22 @@
 # kill previous running process
 pkill -9 -f telemetry/main.py
 
-# start dashboard
-python3 /opt/telemetry/main.py
+if [[ $1 == '--log' ]] || [[ $1 == '-l' ]]
+then
+    NOW=$(date +"%Y%m%d%H%M%S%3N")
+    # change working directory
+    cd /var/log/telemetry
+    # create log file
+    touch $NOW.log
+    # delete the oldest logs if there are more than 20 files
+    ls -1t | tail -n +21 | xargs -d '\n' rm -f
+    # display logging info
+    echo "Redirecting output to file '/var/log/telemetry/$NOW.log'..."
+    # start system with redirected output
+    python3 -u /opt/telemetry/main.py &>> $NOW.log
+    # make the log file read-only
+    chmod 0444 $NOW.log
+else
+    # start system normally
+    python3 /opt/telemetry/main.py
+fi

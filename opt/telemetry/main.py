@@ -25,7 +25,7 @@ if not provider.end_setup.isSet() or not dashboard.end_setup.isSet() or not weba
     exit()
 
 # Wait all threads to start
-print(f"{Style.BRIGHT}[main_thread] Telemetry system started{Style.RESET_ALL}")
+print(f"{Style.BRIGHT}[main_thread] Telemetry system started (CTRL+C to stop){Style.RESET_ALL}")
 
 # Watch threads and try recovery when needed, terminate program when KeyboardInterrupt is caught
 while True:
