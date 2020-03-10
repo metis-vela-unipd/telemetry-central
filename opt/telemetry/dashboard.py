@@ -2,7 +2,9 @@ from tkinter import Tk, Label, Frame, StringVar, LEFT
 from threading import Thread, Event
 from collections import namedtuple
 from PIL import Image, ImageTk
+from colorama import Style
 import os
+
 
 DashboardTheme = namedtuple('Theme', 'background foreground')
 
@@ -95,5 +97,6 @@ class Dashboard(Thread):
         """ Setup the graphics, start the updating process and enter tkinter mainloop. """
         self.setupGUI()
         self.update()
+        print(f"{Style.DIM}[{self.getName()}] Setup finished{Style.RESET_ALL}")
         self.end_setup.set()
         self.root.mainloop()
