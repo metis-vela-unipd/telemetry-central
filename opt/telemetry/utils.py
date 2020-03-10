@@ -1,3 +1,5 @@
+from threading import Timer
+
 class TimeoutVar:
     """
     Class for the creation of variables with timeout.

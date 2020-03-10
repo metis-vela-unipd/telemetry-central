@@ -1,5 +1,5 @@
 from gps import gps, WATCH_ENABLE, WATCH_NEWSTYLE, MPS_TO_KNOTS
-from threading import Thread, Timer, Event
+from threading import Thread, Event
 from colorama import Style, Fore
 from utils import TimeoutVar
 
