@@ -22,8 +22,25 @@
   </head>
   <body class="bg-dark">
     <div class="container-fluid">
-      <h1 class="display-1 text-light"><span id="speed">{{ speed }}</span> kt</h1>
-      <h1 class="display-1 text-light"><span id="heading">{{ heading }}</span> °</h1>
+      <div class="row">
+        <div class="col">
+          <h1 class="display-1 text-light text-right" id="speed">{{ speed }}</h1>
+        </div>
+        <div class="col">
+          <h1 class="display-1 text-light">kt</h1>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <h1 class="display-1 text-light text-right" id="heading">{{ heading }}</h1>
+        </div>
+        <div class="col">
+          <h1 class="display-1 text-light">°</h1>
+        </div>
+      </div>
+      <div class="row px-4">
+        <button type="button" class="btn btn-outline-light btn-lg btn-block mx-auto mt-3">Avvia log</button>
+      </div>
     </div>
   </body>
 </html>
