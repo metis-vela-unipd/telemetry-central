@@ -26,5 +26,18 @@ opt/        | /opt
 bin/        | /usr/local/bin
 autostart/  | /etc/xdg/autostart
 default/    | /etc/default
-system/     | /etc/systemd/system/
+nginx/      | /etc/nginx
+system/     | /etc/systemd/system
 Pictures/   | /home/pi/Pictures
+
+Then enable all the services in the `/system` folder by doing:
+```
+sudo systemctl enable <service-name>
+```
+Where `<service-name>` is the name of the file without the extension (e.g. file name: `jupyter.service` -> service name: `jupyter`).
+
+Finally enable the telemetry webapp:
+```
+sudo ln -s /etc/nginx/sites-available/telemetry /etc/nginx/sites-enabled
+```
+ 
