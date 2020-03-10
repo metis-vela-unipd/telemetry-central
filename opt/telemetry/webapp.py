@@ -8,7 +8,7 @@ class Webapp(Thread):
     def __init__(self, provider):
         Thread.__init__(self, name="webapp_thread", daemon=True)
         self.app = Flask(__name__)
-        self.app.config['SECRET_KEY'] = 'secret!'
+        self.app.config['SECRET_KEY'] = 'f7acbeb708f93e5e81e8a55238aae4bbc75f69ac36d18d0c'
         self.socketio = SocketIO(self.app)
 
         self.app.add_url_rule('/', 'index', self.index)
