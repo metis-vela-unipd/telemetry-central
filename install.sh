@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# console colors
-GREEN='\033[0;32m'
-RED='\033[0;31m'
-RESET='\033[0m'
-
 {
 	{
 		# copy support files
@@ -43,8 +38,8 @@ RESET='\033[0m'
 		# copy wallpaper image
 		cp -RT Pictures/ /home/pi/Pictures
 	} && {
-		echo -e "${GREEN}Installation was succesful!${RESET}\n"
+		echo -e "Installation was succesful!"
 	}
 } || {
-	echo -e "${RED}Installation failed. You can still try the manual way, instructions can be found in the README file.${RESET}\n"
+	echo -e "Installation failed. You can still try the manual way, instructions can be found in the README file."
 }

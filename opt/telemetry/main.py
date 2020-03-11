@@ -22,7 +22,7 @@ webapp.end_setup.wait(timeout=20)
 
 if not provider.end_setup.isSet() or not dashboard.end_setup.isSet() or not webapp.end_setup.isSet():
     print(f"{Fore.RED}[main_thread] Something went wrong during threads initialization, quitting...{Fore.RESET}")
-    exit()
+    exit(1)
 
 # Wait all threads to start
 print(f"{Style.BRIGHT}[main_thread] Telemetry system started (CTRL+C to stop){Style.RESET_ALL}")
@@ -41,7 +41,7 @@ while True:
                 print(f"{Fore.GREEN}[main_thread] Done recovery!{Fore.RESET}")
             else:
                 print(f"{Fore.RED}[main_thread] Recovery failed, quitting...{Fore.RESET}")
-                exit()
+                exit(1)
     except KeyboardInterrupt:
         print(f"{Fore.RED}[main_thread] KeyboardInterrput caught, quitting...{Fore.RESET}")
         break
