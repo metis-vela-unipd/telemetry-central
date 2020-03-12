@@ -1,7 +1,0 @@
-#!/bin/bash
-
-# stoplog - A script to stop all the logging processes
-
-# kill all running process
-killall gpxlogger
-echo "Stopped all gpxlogger processes"

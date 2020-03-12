@@ -1,10 +1,9 @@
-from tkinter import Tk, Label, Frame, StringVar, LEFT
+from tkinter import Tk, Label, Frame, StringVar, LEFT, ttk
 from threading import Thread, Event
 from collections import namedtuple
 from PIL import Image, ImageTk
 from colorama import Style
 import os
-
 
 DashboardTheme = namedtuple('Theme', 'background foreground')
 
@@ -14,9 +13,10 @@ DEFAULT_FONT_SIZE = 300
 class Dashboard(Thread):
     """ Thread for the creation and the update of UI objects. """
 
-    def __init__(self, provider, theme=DEFAULT_THEME, font_size=DEFAULT_FONT_SIZE):
+    def __init__(self, provider, logger, theme=DEFAULT_THEME, font_size=DEFAULT_FONT_SIZE):
         """  Set data provider and graphic interface options. """
         Thread.__init__(self, name="dashboard_thread", daemon=True)
+        self.logger = logger
         self.provider = provider
         self.theme = theme
         self.font_size = font_size
@@ -74,6 +74,9 @@ class Dashboard(Thread):
 
         self.gps_icn = Label(status_frame, image=self.icons['gps_disconnected.png'], bg=self.theme.foreground)
         self.gps_icn.image = self.icons['gps_disconnected.png']
+        self.log_icn = Label(status_frame, image=self.icons['logging.png'], bg=self.theme.foreground)
+        self.log_icn.image = self.icons['logging.png']
+        self.log_lbl = Label(status_frame, text="LOGGING...", font=('Arial Bold', 16), fg='red4', bg=self.theme.foreground)
 
         self.gps_icn.pack(side=LEFT)
 
@@ -87,6 +90,13 @@ class Dashboard(Thread):
             self.speed.set("-")
             self.heading.set("-")
             icon = self.icons['gps_disconnected.png']
+
+        if not self.logger.is_logging: 
+            self.log_icn.pack_forget()
+            self.log_lbl.pack_forget()
+        else: 
+            self.log_icn.pack(side=LEFT)
+            self.log_lbl.pack(side=LEFT)
 
         self.gps_icn.configure(image=icon)
         self.gps_icn.image = icon

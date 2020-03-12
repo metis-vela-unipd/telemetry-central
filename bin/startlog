@@ -5,8 +5,10 @@
 # get current time
 NOW=$(date +"%Y-%m-%d_%H:%M:%S")
 
+# kill all running process
+pkill -9 -f gpxlogger
+
 # start gpxlogger
 mkdir -p ~/telemetry-logs/gpx
 filename=~/telemetry-logs/gpx/$NOW.gpx
 gpxlogger -d -f $filename
-echo "Started gpxlogger process with output $filename, use 'stoplog' to stop it"

@@ -11,36 +11,70 @@
     <script type="text/javascript" src="/static/js/popper.min.js"></script>
     <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/static/js/socket.io.js"></script>
-    
-    <script type="text/javascript" charset="utf-8">
-      var socket = io();
-      socket.on('update', function(data) {
-        $('#speed').html(data['speed']);
-        $('#heading').html(data['heading']);
-      });
-    </script>
+    <script type="text/javascript" src="/static/js/feather.min.js"></script>
+
+    <style>
+      .feather {
+        width: 22px;
+        height: 22px;
+        vertical-align: text-bottom;
+      }
+    </style>
   </head>
   <body class="bg-dark">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col">
+    <div class="container-md">
+      <div class="row justify-content-center">
+        <div class="col-9 col-sm-10 col-md-5 border-bottom">
           <h1 class="display-1 text-light text-right" id="speed">{{ speed }}</h1>
         </div>
-        <div class="col">
+        <div class="col-3 col-sm-2 border-bottom">
           <h1 class="display-1 text-light">kt</h1>
         </div>
       </div>
-      <div class="row">
-        <div class="col">
+      <div class="row justify-content-center">
+        <div class="col-9 col-sm-10 col-md-5 border-bottom">
           <h1 class="display-1 text-light text-right" id="heading">{{ heading }}</h1>
         </div>
-        <div class="col">
+        <div class="col-3 col-sm-2 border-bottom">
           <h1 class="display-1 text-light">°</h1>
         </div>
       </div>
-      <div class="row px-4">
-        <button type="button" class="btn btn-outline-light btn-lg btn-block mx-auto mt-3">Avvia log</button>
+      <div class="row justify-content-center py-4">
+        <div class="col-12 col-sm-6 col-md-3">
+          <button type="button" class="btn btn-block btn-lg {% if logging %} btn-danger {% else %} btn-light {% endif %}" id="logBtn">
+            <i data-feather="save"></i>
+            <span>{% if logging %} Logging... {% else %} Avvia log {% endif %} </span>
+          </button>
+        </div>
       </div>
     </div>
+
   </body>
+  <script>
+    feather.replace();
+
+    var socket = io();
+    var logBtn = $('#logBtn')
+
+    socket.on('update', function(data) {
+      $('#speed').html(data['speed']);
+      $('#heading').html(data['heading']);
+      if(data['logging']) logStarted();
+      else logStopped();
+    });
+
+    function logStarted() {
+      logBtn.removeClass('btn-light').addClass('btn-danger');
+      logBtn.find('span').html("Logging...");
+    }
+
+    function logStopped() {
+      logBtn.removeClass('btn-danger').addClass('btn-light');
+      logBtn.find('span').html("Avvia log");
+    }
+
+    $('#logBtn').click(function() {
+      socket.emit('logBtnClick');
+    });
+  </script>
 </html>

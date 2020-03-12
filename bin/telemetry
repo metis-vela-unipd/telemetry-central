@@ -8,6 +8,7 @@ pkill -9 -f telemetry/main.py
 
 if [[ $1 == '--log' ]] || [[ $1 == '-l' ]]
 then
+    # get current time
     NOW=$(date +"%Y%m%d%H%M%S%3N")
     # change working directory
     cd /var/log/telemetry
