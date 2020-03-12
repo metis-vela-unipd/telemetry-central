@@ -37,11 +37,11 @@ if not provider.end_setup.isSet() or \
 # Wait all threads to start
 print(f"{Style.BRIGHT}[main_thread] Telemetry system started (CTRL+C to stop){Style.RESET_ALL}")
 
-# TEST ONLY
+# DEV ONLY
 #import logging
 #log = logging.getLogger('werkzeug')
 #log.setLevel(logging.ERROR)
-#webapp.socket.run(webapp.app, host='0.0.0.0', port=8080, use_reloader=True)
+#webapp.socket.run(webapp.app, host='0.0.0.0', port=8080, debug=True)
 
 # Watch threads and try recovery when needed, terminate program when KeyboardInterrupt is caught
 while True:

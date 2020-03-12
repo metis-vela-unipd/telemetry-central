@@ -22,7 +22,11 @@ class Webapp(Thread):
 
     def index(self):
         """ Index page handler. Simply render the 'index.html' template in the 'templates' folder. """
-        return render_template('index.html', speed=self.provider.speed.actual, heading=self.provider.heading.actual, logging=self.logger.is_logging)
+        return render_template('index.html', 
+                                speed=self.provider.speed_display, 
+                                heading=self.provider.heading_display, 
+                                fix=self.provider.has_fix,
+                                logging=self.logger.is_logging)
 
     def logBtnClick(self):
         """ Event fired when the log button is pressed in the webapp. """
@@ -33,7 +37,12 @@ class Webapp(Thread):
         """ Background task for updating live data. Emit a websocket event with updates. """
         while True:
             self.socket.sleep(0.5)
-            self.socket.emit('update', {'speed': self.provider.speed.actual, 'heading': self.provider.heading.actual, 'logging': self.logger.is_logging})
+            self.socket.emit('update', {
+                'speed': self.provider.speed_display, 
+                'heading': self.provider.heading_display, 
+                'fix': self.provider.has_fix,
+                'logging': self.logger.is_logging
+                })
 
     def run(self):
         """ Start update task and enter WSGI server (eventlet) main loop. """

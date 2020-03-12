@@ -15,6 +15,21 @@ class Gpsd(Thread):
         self.heading = TimeoutVar(-1, 3)
         self.end_setup = Event()
 
+    @property
+    def speed_display(self):
+        """ Get a displayable value for the speed variable. """
+        return "-" if self.speed.isDefault() or not self.has_fix else str(self.speed.actual)
+
+    @property
+    def heading_display(self):
+        """ Get a displayable value for the heading variable. """
+        return "-" if self.heading.isDefault() or not self.has_fix else str(self.heading.actual)
+
+    @property
+    def has_fix(self):
+        """ Tell if the gps has a FIX. """
+        return not self.fix.isDefault()
+
     def run(self):
         """ Continuously get gpsd sentences and update variables accordingly. """
         print(f"{Style.DIM}[{self.getName()}] Setup finished{Style.RESET_ALL}")

@@ -82,14 +82,10 @@ class Dashboard(Thread):
 
     def update(self):
         """ Update UI objects accordingly to the provider data. Executed every 500 ms. """
-        if self.provider.fix.actual:
-            self.speed.set("-" if self.provider.speed.isDefault() else str(self.provider.speed.actual))
-            self.heading.set("-" if self.provider.heading.isDefault() else str(self.provider.heading.actual))
-            icon = self.icons['gps_connected.png']
-        else:
-            self.speed.set("-")
-            self.heading.set("-")
-            icon = self.icons['gps_disconnected.png']
+        self.speed.set(self.provider.speed_display)
+        self.heading.set(self.provider.heading_display)
+        if self.provider.has_fix: icon = self.icons['gps_connected.png']
+        else: icon = self.icons['gps_disconnected.png']
 
         if not self.logger.is_logging: 
             self.log_icn.pack_forget()
