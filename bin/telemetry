@@ -3,32 +3,32 @@
 # telemetry - A script to start the Metis Telemetry System.
 #             Use --log option to redirect output to a log file in /var/log/telemetry
 
-# kill previous running process
+# Kill previous running process
 pkill -9 -f telemetry/main.py
 
 if [[ $1 == '--log' ]] || [[ $1 == '-l' ]]
 then
-    # get current time
+    # Get current time
     NOW=$(date +"%Y%m%d%H%M%S%3N")
-    # change working directory
+    # Change working directory
     cd /var/log/telemetry
-    # create log file
+    # Create log file
     touch $NOW.log
-    # delete the oldest logs if there are more than 20 files
+    # Delete the oldest logs if there are more than 20 files
     ls -1t | tail -n +21 | xargs -d '\n' rm -f
-    # display start logging info
+    # Display start logging info
     echo "Redirecting output to file '/var/log/telemetry/$NOW.log'..."
     echo "--- START LOG ---" >> $NOW.log
-    # start system with redirected output
+    # Start system with redirected output
     python3 -u /opt/telemetry/main.py &>> $NOW.log
-    # add ending process log
+    # Add ending process log
     echo "Process terminated with exit code $?" >> $NOW.log
     echo "---- END LOG ----" >> $NOW.log
-    # make the log file read-only
+    # Make the log file read-only
     chmod 0444 $NOW.log
 else
-    # start system normally
+    # Start system normally
     python3 /opt/telemetry/main.py
-    # ending process
+    # Ending process
     echo "Process terminated with exit code $?"
 fi

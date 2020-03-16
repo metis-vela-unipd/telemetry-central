@@ -2,40 +2,40 @@
 
 {
 	{
-		# copy support files
+		# Copy support files
 		cp -RT opt/ /opt
 	} && {
-		# copy shell scritps
+		# Copy shell scritps
 		cp -RT bin/ /usr/local/bin
 	} && {
-		# copy autostart files
+		# Copy autostart files
 		cp -RT autostart/ /etc/xdg/autostart
 	} && {
-		# copy gpsd settings
+		# Copy gpsd settings
 		cp -RT default/ /etc/default
 	} && {
-		# copy nginx settings
+		# Copy nginx settings
 		cp -RT nginx/ /etc/nginx
 	} && {
-		# remove default site symlink
+		# Remove default site symlink
 		rm -f /etc/nginx/sites-enabled/default
-		# create custom site symlink
+		# Create custom site symlink
 		ln -sf /etc/nginx/sites-available/telemetry /etc/nginx/sites-enabled
 	} &&{
-		# copy systemd services
+		# Copy systemd services
 		cp -RT system/ /etc/systemd/system
 	} && {
-		# enable all services
+		# Enable all services
 		for service in system/*.service; do
 			systemctl enable $(basename $service)
 		done
 	} && {
-		# create console logs directory
+		# Create console logs directory
 		mkdir -p /var/log/telemetry
-		# grant write permissions to user 'pi'
+		# Grant write permissions to user 'pi'
 		chown pi: /var/log/telemetry
 	} && {
-		# copy wallpaper image
+		# Copy wallpaper image
 		cp -RT Pictures/ /home/pi/Pictures
 	} && {
 		echo -e "Installation was succesful!"

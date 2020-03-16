@@ -2,13 +2,13 @@
 
 # startlog - A script to start the logging processes
 
-# get current time
+# Get current time
 NOW=$(date +"%Y-%m-%d_%H:%M:%S")
 
-# kill all running process
+# Kill all running process
 pkill -9 -f gpxlogger
 
-# start gpxlogger
+# Start gpxlogger
 mkdir -p ~/telemetry-logs/gpx
 filename=~/telemetry-logs/gpx/$NOW.gpx
 gpxlogger -d -f $filename
