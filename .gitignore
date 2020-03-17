@@ -108,3 +108,6 @@ venv.bak/
 
 # Vscode .vscode folder
 .vscode
+
+# PyCharm .idea folder
+.idea
