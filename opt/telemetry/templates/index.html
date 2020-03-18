@@ -1,6 +1,23 @@
+<!--
+  ~ Copyright (c) $today.year Matteo Carnelos.
+
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -13,110 +30,110 @@
     <script type="text/javascript" src="/static/js/socket.io.js"></script>
     <script type="text/javascript" src="/static/js/feather.min.js"></script>
 
-    <style>
-      .feather {
-        vertical-align: text-bottom;
-      }
-    </style>
-  </head>
-  <body class="bg-dark">
-    <div class="container-md">
-      <div class="row justify-content-center">
+</head>
+<body class="bg-dark">
+<div class="container-md">
+    <div class="row justify-content-center">
         <div class="col-md-9 col-lg-7">
-          <div class="row border-bottom">
-            <h1 class="flex-grow-1 display-1 text-light text-right" id="speedLbl">{{ speed }}</h1>
-            <h1 class="col-3 col-sm-2 display-1 text-light">kt</h1>
-          </div>
-
-          <div class="row border-bottom">
-            <h1 class="flex-grow-1 display-1 text-light text-right" id="headingLbl">{{ heading }}</h1>
-            <h1 class="col-3 col-sm-2 display-1 text-light">°</h1>
-          </div>
-
-          <div class="row justify-content-center pt-4">
-            <div class="col-sm-7">
-              <button type="button" class="btn btn-block btn-lg {% if logging %}btn-danger{% else %}btn-light{% endif %}" id="logBtn">
-                <i data-feather="save" style="width: 22px; height: 22px"></i>
-                <span>{% if logging %}Logging...{% else %}Avvia log{% endif %}</span>
-              </button>
+            <div class="row border-bottom">
+                <h1 class="flex-grow-1 display-1 text-light text-right" id="speedLbl">{{ speed }}</h1>
+                <h1 class="col-3 col-sm-2 display-1 text-light">kt</h1>
             </div>
-          </div>
 
-          <div class="row justify-content-center pt-2">
-            <div class="{% if fix %}d-none{% endif %} text-warning px-3" id="gpsLostLbl">
-              <i data-feather="alert-triangle" style="width: 18px; height: 18px"></i>
-              <span>GPS Disconnesso</span>
+            <div class="row border-bottom">
+                <h1 class="flex-grow-1 display-1 text-light text-right" id="headingLbl">{{ heading }}</h1>
+                <h1 class="col-3 col-sm-2 display-1 text-light">°</h1>
             </div>
-            <div class="d-none text-danger px-3" id="wifiLostLbl">
-              <i data-feather="wifi-off" style="width: 18px; height: 18px"></i>
-              <span>Wi-Fi Perso</span>
+
+            <div class="row justify-content-center pt-4">
+                <div class="col-sm-7">
+                    <button type="button"
+                            class="btn btn-block btn-lg {% if logging %}btn-danger{% else %}btn-light{% endif %}"
+                            id="logBtn">
+                        <i data-feather="save" style="width: 22px; height: 22px; vertical-align: text-bottom"></i>
+                        <span>{% if logging %}Logging...{% else %}Avvia log{% endif %}</span>
+                    </button>
+                </div>
             </div>
-          </div>
+
+            <div class="row justify-content-center pt-2">
+                <div class="{% if fix %}d-none{% endif %} text-warning px-3" id="gpsLostLbl">
+                    <i data-feather="alert-triangle" style="width: 18px; height: 18px; vertical-align: text-bottom"></i>
+                    <span>GPS Disconnesso</span>
+                </div>
+                <div class="d-none text-danger px-3" id="wifiLostLbl">
+                    <i data-feather="wifi-off" style="width: 18px; height: 18px; vertical-align: text-bottom"></i>
+                    <span>Wi-Fi Perso</span>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </body>
-  <script>
+</div>
+</body>
+<script>
     feather.replace();
 
-    var socket = io();
-    var connected = true;
-    var watchdog = setTimeout(wifiLost, 5000);
-    var refresh;
-    var speedLbl = $('#speedLbl');
-    var headingLbl = $('#headingLbl');
-    var logBtn = $('#logBtn');
-    var gpsLostLbl = $('#gpsLostLbl');
-    var wifiLostLbl = $('#wifiLostLbl');
+    const socket = io();
+    let connected = true;
+    let watchdog = setTimeout(wifiLost, 5000);
+    let refresh;
 
-    socket.on('update', function(data) {
-      resetWatchdog();
-      speedLbl.html(data['speed']);
-      headingLbl.html(data['heading']);
-      if(data['logging']) logStarted();
-      else logStopped();
-      if(data['fix']) gpsConnected();
-      else gpsDisconnected();
+    const speedLbl = $('#speedLbl');
+    const headingLbl = $('#headingLbl');
+    const logBtn = $('#logBtn');
+    const gpsLostLbl = $('#gpsLostLbl');
+    const wifiLostLbl = $('#wifiLostLbl');
+
+    socket.on('update', function (data) {
+        resetWatchdog();
+        speedLbl.html(data['speed']);
+        headingLbl.html(data['heading']);
+        if (data['logging']) logStarted();
+        else logStopped();
+        if (data['fix']) gpsConnected();
+        else gpsDisconnected();
     });
 
     function resetWatchdog() {
-      clearTimeout(watchdog);
-      watchdog = setTimeout(wifiLost, 5000);
-      if(connected) return;
-      wifiLostLbl.addClass('d-none');
-      if(refresh != null) clearInterval(refresh);
-      connected = true;
+        clearTimeout(watchdog);
+        watchdog = setTimeout(wifiLost, 5000);
+        if (connected) return;
+        wifiLostLbl.addClass('d-none');
+        if (refresh != null) clearInterval(refresh);
+        connected = true;
     }
 
     function wifiLost() {
-      connected = false;
-      wifiLostLbl.removeClass('d-none');
-      gpsLostLbl.addClass('d-none');
-      headingLbl.html("-");
-      speedLbl.html("-");
-      refresh = setInterval(function() { location.reload(); }, 10000);
+        connected = false;
+        wifiLostLbl.removeClass('d-none');
+        gpsLostLbl.addClass('d-none');
+        headingLbl.html("-");
+        speedLbl.html("-");
+        refresh = setInterval(function () {
+            location.reload();
+        }, 10000);
     }
 
     function gpsConnected() {
-      gpsLostLbl.addClass('d-none');
+        gpsLostLbl.addClass('d-none');
     }
 
     function gpsDisconnected() {
-      gpsLostLbl.removeClass('d-none');
+        gpsLostLbl.removeClass('d-none');
     }
 
     function logStarted() {
-      logBtn.removeClass('btn-light').addClass('btn-danger');
-      logBtn.find('span').html("Logging...");
+        logBtn.removeClass('btn-light').addClass('btn-danger');
+        logBtn.find('span').html("Logging...");
     }
 
     function logStopped() {
-      logBtn.removeClass('btn-danger').addClass('btn-light');
-      logBtn.find('span').html("Avvia log");
+        logBtn.removeClass('btn-danger').addClass('btn-light');
+        logBtn.find('span').html("Avvia log");
     }
 
-    $('#logBtn').click(function() {
-      socket.emit('logBtnClick');
+    logBtn.click(function () {
+        socket.emit('log_btn_click');
     });
-  </script>
+</script>
 </html>

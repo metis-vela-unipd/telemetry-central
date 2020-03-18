@@ -27,7 +27,7 @@
 	} && {
 		# Enable all services
 		for service in system/*.service; do
-			systemctl enable $(basename $service)
+			systemctl enable "$(basename "$service")"
 		done
 	} && {
 		# Create console logs directory

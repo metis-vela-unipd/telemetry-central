@@ -1,7 +1,23 @@
+#  Copyright (c) 2020 Matteo Carnelos.
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 from threading import Thread, Event
 from colorama import Style
+
 
 class Webapp(Thread):
     """ Thread for the management of the webapp. """
@@ -14,7 +30,7 @@ class Webapp(Thread):
         self.socket = SocketIO(self.app)
 
         self.app.add_url_rule('/', 'index', self.index)
-        self.socket.on_event('logBtnClick', self.logBtnClick)
+        self.socket.on_event('log_btn_click', self.log_btn_click)
 
         self.provider = provider
         self.logger = logger
@@ -22,27 +38,29 @@ class Webapp(Thread):
 
     def index(self):
         """ Index page handler. Simply render the 'index.html' template in the 'templates' folder. """
-        return render_template('index.html', 
-                                speed=self.provider.speed_display, 
-                                heading=self.provider.heading_display, 
-                                fix=self.provider.has_fix,
-                                logging=self.logger.is_logging)
+        return render_template('index.html',
+                               speed=self.provider.speed_display,
+                               heading=self.provider.heading_display,
+                               fix=self.provider.has_fix,
+                               logging=self.logger.is_logging)
 
-    def logBtnClick(self):
+    def log_btn_click(self):
         """ Event fired when the log button is pressed in the webapp. """
-        if self.logger.is_logging: self.logger.stopLog()
-        else: self.logger.startLog()
+        if self.logger.is_logging:
+            self.logger.stop_log()
+        else:
+            self.logger.start_log()
 
     def update(self):
         """ Background task for updating live data. Emit a websocket event with updates. """
         while True:
             self.socket.sleep(0.5)
             self.socket.emit('update', {
-                'speed': self.provider.speed_display, 
-                'heading': self.provider.heading_display, 
+                'speed': self.provider.speed_display,
+                'heading': self.provider.heading_display,
                 'fix': self.provider.has_fix,
                 'logging': self.logger.is_logging
-                })
+            })
 
     def run(self):
         """ Start update task and enter WSGI server (eventlet) main loop. """

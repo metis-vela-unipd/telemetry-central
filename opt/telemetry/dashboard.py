@@ -1,4 +1,19 @@
-from tkinter import Tk, Label, Frame, StringVar, LEFT, ttk
+#  Copyright (c) 2020 Matteo Carnelos.
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+from tkinter import Tk, Label, Frame, StringVar, LEFT
 from threading import Thread, Event
 from collections import namedtuple
 from PIL import Image, ImageTk
@@ -10,6 +25,7 @@ DashboardTheme = namedtuple('Theme', 'background foreground')
 DEFAULT_THEME = DashboardTheme('gray10', 'gray90')
 DEFAULT_FONT_SIZE = 300
 
+
 class Dashboard(Thread):
     """ Thread for the creation and the update of UI objects. """
 
@@ -20,10 +36,16 @@ class Dashboard(Thread):
         self.provider = provider
         self.theme = theme
         self.font_size = font_size
-        self.icons = { }
+        self.icons = {}
         self.end_setup = Event()
+        self.root = None
+        self.speed = None
+        self.heading = None
+        self.gps_icn = None
+        self.log_icn = None
+        self.log_lbl = None
 
-    def loadIcons(self):
+    def load_icons(self):
         """ Populate the icons dictionary with all the rendered icons inside the 'icons' directory. """
         root_dir = os.path.dirname(__file__)
         icons_dir = os.path.join(root_dir, 'icons')
@@ -33,7 +55,7 @@ class Dashboard(Thread):
             image = Image.open(path)
             self.icons[filename] = ImageTk.PhotoImage(image)
 
-    def setupGUI(self):
+    def setup_gui(self):
         """ 
         Initialize the main screen.
 
@@ -44,19 +66,35 @@ class Dashboard(Thread):
         self.root = Tk()
         self.root.configure(bg=self.theme.background, cursor='none')
         self.root.attributes('-fullscreen', True)
-        self.loadIcons()
-        self.setupDisplay()
-        self.setupStatusBar()
+        self.load_icons()
+        self.setup_display()
+        self.setup_statusbar()
 
-    def setupDisplay(self):
+    def setup_display(self):
         """ Setup Display area by creating and placing UI elements. """
         self.speed = StringVar()
         self.heading = StringVar()
 
-        speed_lbl = Label(self.root, textvariable=self.speed, font=('Arial Bold', self.font_size), fg=self.theme.foreground, bg=self.theme.background)
-        knots_lbl = Label(self.root, text="kt", font=('Arial Bold', int(self.font_size/2)), fg=self.theme.foreground, bg=self.theme.background)
-        heading_lbl = Label(self.root, textvariable=self.heading, font=('Arial Bold', self.font_size), fg=self.theme.foreground, bg=self.theme.background)
-        degrees_lbl = Label(self.root, text="°", font=('Arial Bold', self.font_size), fg=self.theme.foreground, bg=self.theme.background)
+        speed_lbl = Label(self.root,
+                          textvariable=self.speed,
+                          font=('Arial Bold', self.font_size),
+                          fg=self.theme.foreground,
+                          bg=self.theme.background)
+        knots_lbl = Label(self.root,
+                          text="kt",
+                          font=('Arial Bold', int(self.font_size/2)),
+                          fg=self.theme.foreground,
+                          bg=self.theme.background)
+        heading_lbl = Label(self.root,
+                            textvariable=self.heading,
+                            font=('Arial Bold', self.font_size),
+                            fg=self.theme.foreground,
+                            bg=self.theme.background)
+        degrees_lbl = Label(self.root,
+                            text="°",
+                            font=('Arial Bold', self.font_size),
+                            fg=self.theme.foreground,
+                            bg=self.theme.background)
 
         self.root.columnconfigure(0, weight=1)
         self.root.rowconfigure(0, weight=1)
@@ -67,16 +105,24 @@ class Dashboard(Thread):
         heading_lbl.grid(column=0, row=1, sticky='E')
         degrees_lbl.grid(column=1, row=1)
 
-    def setupStatusBar(self):
+    def setup_statusbar(self):
         """ Setup StatusBar area by creating and placing UI elements. """
         status_frame = Frame(self.root, bg=self.theme.foreground)
         status_frame.grid(column=0, row=2, columnspan=2, sticky='EW')
 
-        self.gps_icn = Label(status_frame, image=self.icons['gps_disconnected.png'], bg=self.theme.foreground)
+        self.gps_icn = Label(status_frame,
+                             image=self.icons['gps_disconnected.png'],
+                             bg=self.theme.foreground)
         self.gps_icn.image = self.icons['gps_disconnected.png']
-        self.log_icn = Label(status_frame, image=self.icons['logging.png'], bg=self.theme.foreground)
+        self.log_icn = Label(status_frame,
+                             image=self.icons['logging.png'],
+                             bg=self.theme.foreground)
         self.log_icn.image = self.icons['logging.png']
-        self.log_lbl = Label(status_frame, text="LOGGING...", font=('Arial Bold', 16), fg='red4', bg=self.theme.foreground)
+        self.log_lbl = Label(status_frame,
+                             text="LOGGING...",
+                             font=('Arial Bold', 16),
+                             fg='red4',
+                             bg=self.theme.foreground)
 
         self.gps_icn.pack(side=LEFT)
 
@@ -84,8 +130,10 @@ class Dashboard(Thread):
         """ Update UI objects accordingly to the provider data. Executed every 500 ms. """
         self.speed.set(self.provider.speed_display)
         self.heading.set(self.provider.heading_display)
-        if self.provider.has_fix: icon = self.icons['gps_connected.png']
-        else: icon = self.icons['gps_disconnected.png']
+        if self.provider.has_fix:
+            icon = self.icons['gps_connected.png']
+        else:
+            icon = self.icons['gps_disconnected.png']
 
         if not self.logger.is_logging: 
             self.log_icn.pack_forget()
@@ -101,7 +149,7 @@ class Dashboard(Thread):
 
     def run(self):
         """ Setup the graphics, start the updating process and enter tkinter mainloop. """
-        self.setupGUI()
+        self.setup_gui()
         self.update()
         print(f"{Style.DIM}[{self.getName()}] Setup finished{Style.RESET_ALL}")
         self.end_setup.set()

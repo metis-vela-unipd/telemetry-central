@@ -1,3 +1,18 @@
+#  Copyright (c) 2020 Matteo Carnelos.
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 from gpsd import Gpsd
 from dashboard import Dashboard
 from webapp import Webapp
@@ -31,17 +46,17 @@ if not provider.end_setup.isSet() or \
    not webapp.end_setup.isSet() or \
    not logger.end_setup.isSet():
     print(f"{Fore.RED}[main_thread] Something went wrong during threads initialization, quitting...{Fore.RESET}")
-    logger.stopLog()
+    logger.stop_log()
     exit(1)
 
 # Wait all threads to start
 print(f"{Style.BRIGHT}[main_thread] Telemetry system started (CTRL+C to stop){Style.RESET_ALL}")
 
 # DEV ONLY
-#import logging
-#log = logging.getLogger('werkzeug')
-#log.setLevel(logging.ERROR)
-#webapp.socket.run(webapp.app, host='0.0.0.0', port=8080, debug=True)
+# import logging
+# log = logging.getLogger('werkzeug')
+# log.setLevel(logging.ERROR)
+# webapp.socket.run(webapp.app, host='0.0.0.0', port=8080, debug=True)
 
 # Watch threads and try recovery when needed, terminate program when KeyboardInterrupt is caught
 while True:
@@ -57,9 +72,9 @@ while True:
                 print(f"{Fore.GREEN}[main_thread] Done recovery!{Fore.RESET}")
             else:
                 print(f"{Fore.RED}[main_thread] Recovery failed, quitting...{Fore.RESET}")
-                logger.stopLog()
+                logger.stop_log()
                 exit(1)
     except KeyboardInterrupt:
-        print(f"{Fore.RED}[main_thread] KeyboardInterrput caught, quitting...{Fore.RESET}")
-        logger.stopLog()
+        print(f"{Fore.RED}[main_thread] KeyboardInterrupt caught, quitting...{Fore.RESET}")
+        logger.stop_log()
         break

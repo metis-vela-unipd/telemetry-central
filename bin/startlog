@@ -11,4 +11,4 @@ pkill -9 -f gpxlogger
 # Start gpxlogger
 mkdir -p ~/telemetry-logs/gpx
 filename=~/telemetry-logs/gpx/$NOW.gpx
-gpxlogger -d -f $filename
+gpxlogger -d -f "$filename"

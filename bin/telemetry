@@ -11,21 +11,21 @@ then
     # Get current time
     NOW=$(date +"%Y%m%d%H%M%S%3N")
     # Change working directory
-    cd /var/log/telemetry
+    cd /var/log/telemetry || exit 1
     # Create log file
-    touch $NOW.log
+    touch "$NOW.log"
     # Delete the oldest logs if there are more than 20 files
     ls -1t | tail -n +21 | xargs -d '\n' rm -f
     # Display start logging info
     echo "Redirecting output to file '/var/log/telemetry/$NOW.log'..."
-    echo "--- START LOG ---" >> $NOW.log
+    echo "--- START LOG ---" >> "$NOW.log"
     # Start system with redirected output
-    python3 -u /opt/telemetry/main.py &>> $NOW.log
+    python3 -u /opt/telemetry/main.py &>> "$NOW.log"
     # Add ending process log
-    echo "Process terminated with exit code $?" >> $NOW.log
-    echo "---- END LOG ----" >> $NOW.log
+    echo "Process terminated with exit code $?" >> "$NOW.log"
+    echo "---- END LOG ----" >> "$NOW.log"
     # Make the log file read-only
-    chmod 0444 $NOW.log
+    chmod 0444 "$NOW.log"
 else
     # Start system normally
     python3 /opt/telemetry/main.py
