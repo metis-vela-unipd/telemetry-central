@@ -3,7 +3,7 @@ from colorama import Style, Fore
 from utils import TimeoutVar
 
 from mqtt_sensor import MqttSensor
-from gpsd import Gpsd
+from gps_sensor import GpsSensor
 
 class SensorProvider(Thread):
     
@@ -14,7 +14,7 @@ class SensorProvider(Thread):
             'accelSensor' : MqttSensor('accelSensor', [
                 'sensor/accel/#'
             ]),
-            'gps': Gpsd(),
+            'gps': GpsSensor(),
             'windSensor' : MqttSensor('windSensor', [
                 'sensor/wind/#'
             ])
