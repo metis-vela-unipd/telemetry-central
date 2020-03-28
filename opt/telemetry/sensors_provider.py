@@ -2,7 +2,7 @@ from threading import Thread, Event
 from colorama import Style, Fore
 from utils import TimeoutVar
 
-from mqtt import Mqtt
+from mqtt_sensor import Mqtt
 
 class Provider(Thread):
     
