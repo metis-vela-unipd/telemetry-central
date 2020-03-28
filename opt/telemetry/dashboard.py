@@ -135,12 +135,12 @@ class Dashboard(Thread):
         else:
             icon = self.icons['gps_disconnected.png']
 
-        if not self.logger.is_logging: 
-            self.log_icn.pack_forget()
-            self.log_lbl.pack_forget()
-        else: 
+        if self.logger.is_logging:
             self.log_icn.pack(side=LEFT)
             self.log_lbl.pack(side=LEFT)
+        else:
+            self.log_icn.pack_forget()
+            self.log_lbl.pack_forget()
 
         self.gps_icn.configure(image=icon)
         self.gps_icn.image = icon
