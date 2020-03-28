@@ -68,8 +68,8 @@ while True:
             provider.start()
             provider.end_setup.wait(timeout=20)
             if provider.end_setup.isSet():
-                dashboard.pgpsrovider = provider
-                webapp.provider = provider
+                dashboard.gps = provider.getSensor('gps')
+                webapp.provider = provider.getSensor('gps')
                 print(f"{Fore.GREEN}[main_thread] Done recovery!{Fore.RESET}")
             else:
                 print(f"{Fore.RED}[main_thread] Recovery failed, quitting...{Fore.RESET}")
