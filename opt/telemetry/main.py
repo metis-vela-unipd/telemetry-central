@@ -13,14 +13,15 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from gpsd import Gpsd
+from sensor_provider import SensorProvider
+
 from dashboard import Dashboard
 from webapp import Webapp
 from colorama import Fore, Style
 from logger import Logger
 
 # Start the data provider thread (actually is only the gpsd thread)
-provider = Gpsd()
+provider = SensorProvider()
 provider.start()
 
 # Start the logger thread
@@ -63,11 +64,11 @@ while True:
     try:
         if not provider.is_alive():
             print(f"{Fore.YELLOW}[main_thread] Provider dead, attempting recovery...{Fore.RESET}")
-            provider = Gpsd()
+            provider = SensorProvider()
             provider.start()
             provider.end_setup.wait(timeout=20)
             if provider.end_setup.isSet():
-                dashboard.provider = provider
+                dashboard.pgpsrovider = provider
                 webapp.provider = provider
                 print(f"{Fore.GREEN}[main_thread] Done recovery!{Fore.RESET}")
             else:

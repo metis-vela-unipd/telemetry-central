@@ -28,17 +28,24 @@ class TimeoutVar:
         """ Set options and initialize variable to it's default value. """
         self.actual = default
         self.default = default
-        self.timeout_sec = timeout_sec
-        self.timeout_timer = None
+        self._timeout_sec = timeout_sec
+        self._timeout_timer = None
 
     def set_value(self, value):
         """ Set the value of the variable and reset the timeout timer. """
         self.actual = value
         if self.actual != self.default:
-            if self.timeout_timer is not None: self.timeout_timer.cancel()
-            self.timeout_timer = Timer(self.timeout_sec, self.set_value, [self.default])
-            self.timeout_timer.start()
+            if self._timeout_timer is not None: self._timeout_timer.cancel()
+            self._timeout_timer = Timer(self._timeout_sec, self.set_value, [self.default])
+            self._timeout_timer.start()
     
     def is_default(self):
         """ Tell if the variable value is the default one. """
         return self.actual == self.default
+
+    def __str__(self):
+        return str(self.actual)
+    
+    def __repr__(self):
+        return {'actual':self.actual, 'default':self.default}
+

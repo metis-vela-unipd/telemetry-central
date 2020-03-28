@@ -33,15 +33,16 @@ class Webapp(Thread):
         self.socket.on_event('log_btn_click', self.log_btn_click)
 
         self.provider = provider
+        self.gps = provider.getSensor('gps')
         self.logger = logger
         self.end_setup = Event()
 
     def index(self):
         """ Index page handler. Simply render the 'index.html' template in the 'templates' folder. """
         return render_template('index.html',
-                               speed=self.provider.speed_display,
-                               heading=self.provider.heading_display,
-                               fix=self.provider.has_fix,
+                               speed=self.gps.speed_display,
+                               heading=self.gps.heading_display,
+                               fix=self.gps.has_fix,
                                logging=self.logger.is_logging)
 
     def log_btn_click(self):
@@ -56,9 +57,9 @@ class Webapp(Thread):
         while True:
             self.socket.sleep(0.5)
             self.socket.emit('update', {
-                'speed': self.provider.speed_display,
-                'heading': self.provider.heading_display,
-                'fix': self.provider.has_fix,
+                'speed': self.gps.speed_display,
+                'heading': self.gps.heading_display,
+                'fix': self.gps.has_fix,
                 'logging': self.logger.is_logging
             })
 
