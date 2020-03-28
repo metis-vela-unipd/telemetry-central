@@ -29,7 +29,7 @@ class MqttSensor(Thread):
 
     def on_message(self, client, userdata, msg):
         self.data[msg.topic] = msg.payload.decode()
-        print(self.data)
+        print('Got message from ' + msg.topic + ' : ' + msg.payload.decode())
 
     def on_disconnect(self, client, userdata, rc):
         print("Disconnected")
@@ -42,10 +42,15 @@ class MqttSensor(Thread):
         while True:
             self.client.loop()
 
+    def get_log_line(self):
+        return ",".join(self.data.values())
+
+    def get_log_header(self):
+        return ",".join(self.data.keys())
 
 if __name__ == "__main__":
     test_sensor = MqttSensor("test_sensor", ["test_topic"])
     test_sensor.start()
-
+    print(test_sensor.get_log_header())
     while True:
-        pass
+        print(test_sensor.get_log_line())
