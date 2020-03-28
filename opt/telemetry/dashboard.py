@@ -33,7 +33,7 @@ class Dashboard(Thread):
         """  Set data provider and graphic interface options. """
         Thread.__init__(self, name="dashboard_thread", daemon=True)
         self.logger = logger
-        self.provider = provider
+        self.gps = provider.getSensor('gps')
         self.theme = theme
         self.font_size = font_size
         self.icons = {}
@@ -128,9 +128,9 @@ class Dashboard(Thread):
 
     def update(self):
         """ Update UI objects accordingly to the provider data. Executed every 500 ms. """
-        self.speed.set(self.provider.speed_display)
-        self.heading.set(self.provider.heading_display)
-        if self.provider.has_fix:
+        self.speed.set(self.gps.speed_display)
+        self.heading.set(self.gps.heading_display)
+        if self.gps.has_fix:
             icon = self.icons['gps_connected.png']
         else:
             icon = self.icons['gps_disconnected.png']
