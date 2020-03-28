@@ -2,15 +2,15 @@ from threading import Thread, Event
 from colorama import Style, Fore
 from utils import TimeoutVar
 
-from mqtt_sensor import Mqtt
+from mqtt_sensor import MqttSensor
 
-class Provider(Thread):
+class SensorsProvider(Thread):
     
     def __init__ (self):
-        Thread.__init__(self, name="provider_thread", daemon=True)
+        Thread.__init__(self, name="sensors_provider_thread", daemon=True)
         self.end_setup = Event()
         self.sensors = [
-            Mqtt('accelSensor', [
+            MqttSensor('accelSensor', [
                 'sensor/accel/#'
             ])
             # MqttSensor('test_sensor', [
@@ -28,7 +28,7 @@ class Provider(Thread):
 
 
 if __name__ == "__main__":
-    provider = Provider()
+    provider = SensorsProvider()
     provider.start()
 
     while True:
