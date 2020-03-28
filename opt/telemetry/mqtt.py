@@ -5,7 +5,7 @@ from utils import TimeoutVar
 import paho.mqtt.client as client
 
 
-class MqttSensor(Thread):
+class Mqtt(Thread):
 
     def __init__(self, sensor_name, topic_list=[]):
         Thread.__init__(self, name=sensor_name, daemon=True)
@@ -44,7 +44,7 @@ class MqttSensor(Thread):
 
 
 if __name__ == "__main__":
-    test_sensor = MqttSensor("test_sensor", ["test_topic"])
+    test_sensor = Mqtt("test_sensor", ["test_topic"])
     test_sensor.start()
 
     while True:

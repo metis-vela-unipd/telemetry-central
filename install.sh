@@ -21,14 +21,6 @@
 		rm -f /etc/nginx/sites-enabled/default
 		# Create custom site symlink
 		ln -sf /etc/nginx/sites-available/telemetry /etc/nginx/sites-enabled
-	} &&{
-		# Copy systemd services
-		cp -RT system/ /etc/systemd/system
-	} && {
-		# Enable all services
-		for service in system/*.service; do
-			systemctl enable "$(basename "$service")"
-		done
 	} && {
 		# Create console logs directory
 		mkdir -p /var/log/telemetry
