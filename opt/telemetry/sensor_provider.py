@@ -37,7 +37,7 @@ class SensorProvider(Thread):
                 # if provider.end_setup.isSet():
                     # print(f"{Fore.GREEN}[main_thread] Done recovery!{Fore.RESET}")
 
-    def getSensor(self, sensor_name):
+    def get_sensor(self, sensor_name):
         if sensor_name in self.sensors:
             return self.sensors[sensor_name]
         return None

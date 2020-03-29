@@ -33,7 +33,7 @@ class Webapp(Thread):
         self.socket.on_event('log_btn_click', self.log_btn_click)
 
         self.provider = provider
-        self.gps = provider.getSensor('gps')
+        self.gps = provider.get_sensor('gps')
         self.logger = logger
         self.end_setup = Event()
 
