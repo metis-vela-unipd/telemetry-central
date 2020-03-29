@@ -6,22 +6,23 @@ from mqtt_sensor import MqttSensor
 from gps_sensor import GpsSensor
 
 sensor_lut = {
-    'accelSensor' : ['sensor/accel/#'],
-    'gps' : [],
-    'windSensor' : ['sensor/wind/#']
+    'accel_sensor': ['sensor/accel/#'],
+    'gps_sensor': [],
+    'wind_sensor': ['sensor/wind/#']
 }
 
+
 class SensorsProvider(Thread):
-    
-    def __init__ (self):
+
+    def __init__(self):
         Thread.__init__(self, name="sensors_provider_thread", daemon=True)
         self.end_setup = Event()
         self.sensors = {
-            'accelSensor' : MqttSensor('accelSensor', [
+            'accel_sensor': MqttSensor('accel_sensor', [
                 'sensor/accel/#'
             ]),
-            'gps': GpsSensor(),
-            'windSensor' : MqttSensor('windSensor', [
+            'gps_sensor': GpsSensor(),
+            'wind_sensor': MqttSensor('wind_sensor', [
                 'sensor/wind/#'
             ])
         }
@@ -37,17 +38,18 @@ class SensorsProvider(Thread):
         while True:
             for sensor in self.sensors.items():
                 if not sensor[1].is_alive():
-                    print(f"{Fore.YELLOW}[sensor_provider_thread] Sensor dead, attempting recovery...{Fore.RESET}")
+                    print(f"{Fore.YELLOW}[{self.getName()}]  Sensor dead, attempting recovery...{Fore.RESET}")
                     self.sensors[sensor[0]] = GpsSensor if sensor[0] is 'gps' else MqttSensor(sensor[0], sensor_lut[sensor[0]])
                     self.sensors[sensor[0]].start()
                     self.sensors[sensor[0]].end_setup.wait(timeout=20)
                     if self.sensors[sensor[0]].end_setup.isSet():
-                        print(f"{Fore.GREEN}[sensor_provider_thread] Done recovery!{Fore.RESET}")
+                        print(f"{Fore.GREEN}[{self.getName()}]  Done recovery!{Fore.RESET}")
 
     def get_sensor(self, sensor_name):
         if sensor_name in self.sensors:
             return self.sensors[sensor_name]
         return None
+
 
 if __name__ == "__main__":
     provider = SensorsProvider()
