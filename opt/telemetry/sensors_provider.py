@@ -11,7 +11,7 @@ sensor_lut = {
     'windSensor' : ['sensor/wind/#']
 }
 
-class SensorProvider(Thread):
+class SensorsProvider(Thread):
     
     def __init__ (self):
         Thread.__init__(self, name="provider_thread", daemon=True)
@@ -50,7 +50,7 @@ class SensorProvider(Thread):
         return None
 
 if __name__ == "__main__":
-    provider = SensorProvider()
+    provider = SensorsProvider()
     provider.start()
 
     while True:
