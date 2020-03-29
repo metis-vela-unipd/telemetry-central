@@ -19,12 +19,12 @@ from colorama import Style, Fore
 from utils import TimeoutVar
 
 
-class GpsSensor(Thread):
+class GpsdSensor(Thread):
     """ Thread for the communication and collections of gps data coming from the gpsd daemon. """
 
     def __init__(self):
         """ Initialize timeout variables and gpsd session. """
-        Thread.__init__(self, name="gps_sensor_thread", daemon=True)
+        Thread.__init__(self, name="gpsd_sensor_thread", daemon=True)
         self.session = gps(mode=WATCH_ENABLE | WATCH_NEWSTYLE)
         self.fix = TimeoutVar(False, 5)
         self.speed = TimeoutVar(-1, 3)

@@ -33,7 +33,7 @@ class Dashboard(Thread):
         """  Set data provider and graphic interface options. """
         Thread.__init__(self, name="dashboard_thread", daemon=True)
         self.logger = logger
-        self.gps = provider.get_sensor('gps_sensor')
+        self.gps = provider.get_sensor('gps')
         self.theme = theme
         self.font_size = font_size
         self.icons = {}
