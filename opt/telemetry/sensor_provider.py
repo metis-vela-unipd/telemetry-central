@@ -5,6 +5,12 @@ from utils import TimeoutVar
 from mqtt_sensor import MqttSensor
 from gps_sensor import GpsSensor
 
+sensor_lut = {
+    'accelSensor' : ['sensor/accel/#'],
+    'gps' : [],
+    'windSensor' : ['sensor/wind/#']
+}
+
 class SensorProvider(Thread):
     
     def __init__ (self):
@@ -28,14 +34,15 @@ class SensorProvider(Thread):
         print(f"{Style.DIM}[{self.getName()}] Setup finished{Style.RESET_ALL}")
         self.end_setup.set()
 
-        # while True:
-            # if not sensor.is_alive():
-                # print(f"{Fore.YELLOW}[main_thread] Provider dead, attempting recovery...{Fore.RESET}")
-                # sensor = SensorProvider()
-                # sensor.start()
-                # sensor.end_setup.wait(timeout=20)
-                # if provider.end_setup.isSet():
-                    # print(f"{Fore.GREEN}[main_thread] Done recovery!{Fore.RESET}")
+        while True:
+            for sensor in self.sensors.items():
+                if not sensor[1].is_alive():
+                    print(f"{Fore.YELLOW}[sensor_provider_thread] Sensor dead, attempting recovery...{Fore.RESET}")
+                    self.sensors[sensor[0]] = GpsSensor if sensor[0] is 'gps' else MqttSensor(sensor[0], sensor_lut[sensor[0]])
+                    self.sensors[sensor[0]].start()
+                    self.sensors[sensor[0]].end_setup.wait(timeout=20)
+                    if self.sensors[sensor[0]].end_setup.isSet():
+                        print(f"{Fore.GREEN}[sensor_provider_thread] Done recovery!{Fore.RESET}")
 
     def getSensor(self, sensor_name):
         if sensor_name in self.sensors:
