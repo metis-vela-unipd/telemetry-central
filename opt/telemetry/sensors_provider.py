@@ -39,7 +39,7 @@ class SensorsProvider(Thread):
             for sensor in self.sensors.items():
                 if not sensor[1].is_alive():
                     print(f"{Fore.YELLOW}[{self.getName()}]  Sensor dead, attempting recovery...{Fore.RESET}")
-                    self.sensors[sensor[0]] = GpsSensor if sensor[0] is 'gps' else MqttSensor(sensor[0], sensor_lut[sensor[0]])
+                    self.sensors[sensor[0]] = GpsSensor if sensor[0] is 'gps_sensor' else MqttSensor(sensor[0], sensor_lut[sensor[0]])
                     self.sensors[sensor[0]].start()
                     self.sensors[sensor[0]].end_setup.wait(timeout=20)
                     if self.sensors[sensor[0]].end_setup.isSet():
