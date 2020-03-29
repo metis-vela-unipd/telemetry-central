@@ -8,7 +8,7 @@ import paho.mqtt.client as client
 class MqttSensor(Thread):
 
     def __init__(self, sensor_name, topic_list=[]):
-        Thread.__init__(self, name=sensor_name, daemon=True)
+        Thread.__init__(self, name=sensor_name + "_thread", daemon=True)
         self.topic_list = topic_list
 
         self.data = {}

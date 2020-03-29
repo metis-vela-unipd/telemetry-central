@@ -14,7 +14,7 @@ sensor_lut = {
 class SensorsProvider(Thread):
     
     def __init__ (self):
-        Thread.__init__(self, name="provider_thread", daemon=True)
+        Thread.__init__(self, name="sensors_provider_thread", daemon=True)
         self.end_setup = Event()
         self.sensors = {
             'accelSensor' : MqttSensor('accelSensor', [
