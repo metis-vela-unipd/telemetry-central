@@ -19,10 +19,11 @@ class MqttSensor(Thread):
         self.client.on_disconnect = self.on_disconnect
 
         self.end_setup = Event()
+        self.connected = Event()
 
     def on_connect(self, client, userdata, flags, rc):
         print("Connected")
-
+        self.connected.set()
         for topic in self.topic_list:
             self.client.subscribe(topic)
             print("Sub to : " + topic)
@@ -33,6 +34,7 @@ class MqttSensor(Thread):
 
     def on_disconnect(self, client, userdata, rc):
         print("Disconnected")
+        self.connected.clear()
 
     def run(self):
         self.client.connect("localhost")
@@ -40,13 +42,22 @@ class MqttSensor(Thread):
         self.end_setup.set()
 
         while True:
-            self.client.loop()
+            try:
+                self.client.loop()
+                if not self.connected.is_set():
+                    break
+            except KeyError:
+                pass
+            except StopIteration:
+                print(f"{Fore.RED}[{self.getName()}] MqttSensor has terminated, quitting...{Fore.RESET}")
+                break
 
     def get_log_line(self):
         return ",".join(self.data.values())
 
     def get_log_header(self):
         return ",".join(self.data.keys())
+
 
 if __name__ == "__main__":
     test_sensor = MqttSensor("test_sensor", ["test_topic"])
