@@ -41,8 +41,8 @@ class SensorProvider(Thread):
                     self.sensors[sensor[0]] = GpsSensor if sensor[0] is 'gps' else MqttSensor(sensor[0], sensor_lut[sensor[0]])
                     self.sensors[sensor[0]].start()
                     self.sensors[sensor[0]].end_setup.wait(timeout=20)
-                if self.sensors[sensor[0]].end_setup.isSet():
-                    print(f"{Fore.GREEN}[sensor_provider_thread] Done recovery!{Fore.RESET}")
+                    if self.sensors[sensor[0]].end_setup.isSet():
+                        print(f"{Fore.GREEN}[sensor_provider_thread] Done recovery!{Fore.RESET}")
 
     def getSensor(self, sensor_name):
         if sensor_name in self.sensors:
