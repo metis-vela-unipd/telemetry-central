@@ -14,8 +14,6 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from sensors_provider import SensorsProvider
-
-from dashboard import Dashboard
 from webapp import Webapp
 from colorama import Fore, Style
 from logger import Logger
@@ -28,22 +26,16 @@ provider.start()
 logger = Logger(provider)
 logger.start()
 
-# Start the dashboard thread
-dashboard = Dashboard(provider, logger)
-dashboard.start()
-
 # Start the web thread
 webapp = Webapp(provider, logger)
 webapp.start()
 
 # Wait until all the threads have finished initializing (or exit after timeout)
 provider.end_setup.wait(timeout=20)
-dashboard.end_setup.wait(timeout=20)
 webapp.end_setup.wait(timeout=20)
 logger.end_setup.wait(timeout=20)
 
 if not provider.end_setup.isSet() or \
-   not dashboard.end_setup.isSet() or \
    not webapp.end_setup.isSet() or \
    not logger.end_setup.isSet():
     print(f"{Fore.RED}[main_thread] Something went wrong during threads initialization, quitting...{Fore.RESET}")
@@ -53,7 +45,7 @@ if not provider.end_setup.isSet() or \
 # Wait all threads to start
 print(f"{Style.BRIGHT}[main_thread] Telemetry system started (CTRL+C to stop){Style.RESET_ALL}")
 
-# DEV ONLY
+# DEVELOPMENT ONLY
 # import logging
 # log = logging.getLogger('werkzeug')
 # log.setLevel(logging.ERROR)
@@ -68,7 +60,6 @@ while True:
             provider.start()
             provider.end_setup.wait(timeout=20)
             if provider.end_setup.isSet():
-                dashboard.gps = provider.get_sensor('gps')
                 webapp.provider = provider.get_sensor('gps')
                 print(f"{Fore.GREEN}[main_thread] Done recovery!{Fore.RESET}")
             else:

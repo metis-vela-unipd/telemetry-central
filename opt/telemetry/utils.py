@@ -44,8 +44,9 @@ class TimeoutVar:
         return self.actual == self.default
 
     def __str__(self):
+        """ Return the string representation of the object. """
         return str(self.actual)
     
     def __repr__(self):
-        return {'actual':self.actual, 'default':self.default}
-
+        """ Return the object representation. """
+        return {'actual': self.actual, 'default': self.default}

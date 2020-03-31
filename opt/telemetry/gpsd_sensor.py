@@ -34,12 +34,12 @@ class GpsdSensor(Thread):
     @property
     def speed_display(self):
         """ Get a displayable value for the speed variable. """
-        return "-" if self.speed.is_default() or not self.has_fix else str(self.speed.actual)
+        return "-" if self.speed.is_default() or not self.has_fix else str(self.speed)
 
     @property
     def heading_display(self):
         """ Get a displayable value for the heading variable. """
-        return "-" if self.heading.is_default() or not self.has_fix else str(self.heading.actual)
+        return "-" if self.heading.is_default() or not self.has_fix else str(self.heading)
 
     @property
     def has_fix(self):

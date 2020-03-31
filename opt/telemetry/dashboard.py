@@ -27,7 +27,11 @@ DEFAULT_FONT_SIZE = 300
 
 
 class Dashboard(Thread):
-    """ Thread for the creation and the update of UI objects. """
+    """
+    *** DEPRECATED ***
+
+    Thread for the creation and the update of UI objects.
+    """
 
     def __init__(self, provider, logger, theme=DEFAULT_THEME, font_size=DEFAULT_FONT_SIZE):
         """  Set data provider and graphic interface options. """
