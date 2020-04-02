@@ -1,13 +1,11 @@
 from threading import Thread, Event
 from colorama import Style, Fore
-from utils import TimeoutVar
-
 import paho.mqtt.client as client
 
 
 class MqttSensor(Thread):
 
-    def __init__(self, sensor_name, topic_list=[]):
+    def __init__(self, sensor_name, topic_list=()):
         Thread.__init__(self, name=sensor_name + "_thread", daemon=True)
         self.topic_list = topic_list
 
@@ -19,11 +17,9 @@ class MqttSensor(Thread):
         self.client.on_disconnect = self.on_disconnect
 
         self.end_setup = Event()
-        self.connected = Event()
 
     def on_connect(self, client, userdata, flags, rc):
         print("Connected")
-        self.connected.set()
         for topic in self.topic_list:
             self.client.subscribe(topic)
             print("Sub to : " + topic)
@@ -34,7 +30,6 @@ class MqttSensor(Thread):
 
     def on_disconnect(self, client, userdata, rc):
         print("Disconnected")
-        self.connected.clear()
 
     def run(self):
         self.client.connect("localhost")
@@ -42,14 +37,8 @@ class MqttSensor(Thread):
         self.end_setup.set()
 
         while True:
-            try:
-                self.client.loop()
-                if not self.connected.is_set():
-                    break
-            except KeyError:
-                pass
-            except StopIteration:
-                print(f"{Fore.RED}[{self.getName()}] MqttSensor has terminated, quitting...{Fore.RESET}")
+            self.client.loop()
+            if not self.client.is_connected():
                 break
 
     def get_log_line(self):
