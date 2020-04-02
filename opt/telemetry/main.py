@@ -17,8 +17,7 @@ from sensors_provider import SensorsProvider
 from webapp import Webapp
 from colorama import Fore, Style
 from logger import Logger
-import subprocess
-import json
+import subprocess, json
 
 def terminate(return_code):
     logger.stop_log()
