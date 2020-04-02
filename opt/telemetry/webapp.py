@@ -30,6 +30,7 @@ class Webapp(Thread):
         self.socket = SocketIO(self.app)
 
         self.app.add_url_rule('/', 'index', self.index)
+        self.app.add_url_rule('/view', 'view', self.view)
         self.socket.on_event('log_btn_click', self.log_btn_click)
 
         self.provider = provider
@@ -38,12 +39,16 @@ class Webapp(Thread):
         self.end_setup = Event()
 
     def index(self):
-        """ Index page handler. Simply render the 'index.html' template in the 'templates' folder. """
-        return render_template('index.html',
+        """ Index page handler. Simply render the 'control.html' template in the 'templates' folder. """
+        return render_template('control.html',
                                speed=self.gps.speed_display,
                                heading=self.gps.heading_display,
                                fix=self.gps.has_fix,
                                logging=self.logger.is_logging)
+
+    def view(self):
+        """ View page handler. Render the 'view.html' file, a special version of the index page without controls. """
+        return render_template('view.html')
 
     def log_btn_click(self):
         """ Event fired when the log button is pressed in the webapp. """

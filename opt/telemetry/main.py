@@ -46,8 +46,7 @@ if not provider.end_setup.isSet() or \
    not webapp.end_setup.isSet() or \
    not logger.end_setup.isSet():
     print(f"{Fore.RED}[main_thread] Something went wrong during threads initialization, quitting...{Fore.RESET}")
-    logger.stop_log()
-    exit(1)
+    terminate(1)
 
 # Wait all threads to start
 print(f"{Style.BRIGHT}[main_thread] Telemetry system started (CTRL+C to stop){Style.RESET_ALL}")
@@ -62,17 +61,10 @@ preferences_file = open('/home/pi/.config/chromium/Default/Preferences', 'w')
 json.dump(preferences, preferences_file)
 preferences_file.close()
 
-
 # Start chromium browser in kiosk mode
-chrome = subprocess.Popen(['chromium-browser', '--noerrdialogs', '--disable-infobars', '--kiosk', 'localhost'],
+chrome = subprocess.Popen(['chromium-browser', '--noerrdialogs', '--disable-infobars', '--kiosk', 'localhost/view'],
                           stdout=subprocess.DEVNULL,
                           stderr=subprocess.DEVNULL)
-
-# DEVELOPMENT ONLY (AUTOMATIC HTML RELOAD)
-# import logging
-# log = logging.getLogger('werkzeug')
-# log.setLevel(logging.ERROR)
-# webapp.socket.run(webapp.app, host='0.0.0.0', port=8080, debug=True)
 
 # Watch threads and try recovery when needed, terminate program when KeyboardInterrupt is caught
 while True:
