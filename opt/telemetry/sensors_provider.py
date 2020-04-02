@@ -1,7 +1,5 @@
 from threading import Thread, Event
 from colorama import Style, Fore
-from utils import TimeoutVar
-
 from mqtt_sensor import MqttSensor
 from gpsd_sensor import GpsdSensor
 
@@ -10,7 +8,6 @@ sensors_lut = {
     'gps': [],
     'wind': ['sensor/wind/#']
 }
-
 
 class SensorsProvider(Thread):
 
@@ -28,9 +25,8 @@ class SensorsProvider(Thread):
         }
 
     def run(self):
-        for sensor in self.sensors.values():
-            sensor.start()
-            sensor.end_setup.wait(timeout=20)
+        for sensor in self.sensors.values(): sensor.start()
+        for sensor in self.sensors.values(): sensor.end_setup.wait(timeout=20)
 
         print(f"{Style.DIM}[{self.getName()}] Setup finished{Style.RESET_ALL}")
         self.end_setup.set()
@@ -38,7 +34,7 @@ class SensorsProvider(Thread):
         while True:
             for sensor in self.sensors.items():
                 if not sensor[1].is_alive():
-                    print(f"{Fore.YELLOW}[{self.getName()}]  Sensor dead, attempting recovery...{Fore.RESET}")
+                    print(f"{Fore.YELLOW}[{self.getName()}]  Sensor '{sensor[0]}' dead, attempting recovery...{Fore.RESET}")
                     self.sensors[sensor[0]] = GpsdSensor if sensor[0] is 'gps' else MqttSensor(sensor[0], sensors_lut[sensor[0]])
                     self.sensors[sensor[0]].start()
                     self.sensors[sensor[0]].end_setup.wait(timeout=20)
@@ -46,8 +42,7 @@ class SensorsProvider(Thread):
                         print(f"{Fore.GREEN}[{self.getName()}]  Done recovery!{Fore.RESET}")
 
     def get_sensor(self, sensor_name):
-        if sensor_name in self.sensors:
-            return self.sensors[sensor_name]
+        if sensor_name in self.sensors: return self.sensors[sensor_name]
         return None
 
 
