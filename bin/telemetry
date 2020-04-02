@@ -3,8 +3,16 @@
 # telemetry - A script to start the Metis Telemetry System.
 #             Use --log option to redirect output to a log file in /var/log/telemetry
 
-# Kill previous running process
-pkill -9 -f telemetry/main.py
+# Terminate previous running processes
+pkill -SIGINT -f telemetry
+
+# Disable screen saver and Display Power Management System
+xset s noblank
+xset s off
+xset -dpms
+
+# Hide mouse cursor
+unclutter -idle 0.5 -root &> /dev/null &
 
 if [[ $1 == '--log' ]] || [[ $1 == '-l' ]]
 then

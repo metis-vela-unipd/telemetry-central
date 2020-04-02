@@ -17,6 +17,13 @@ from sensors_provider import SensorsProvider
 from webapp import Webapp
 from colorama import Fore, Style
 from logger import Logger
+import subprocess
+import json
+
+def terminate(return_code):
+    logger.stop_log()
+    chrome.terminate()
+    exit(return_code)
 
 # Start the data provider thread (actually is only the gpsd thread)
 provider = SensorsProvider()
@@ -45,7 +52,23 @@ if not provider.end_setup.isSet() or \
 # Wait all threads to start
 print(f"{Style.BRIGHT}[main_thread] Telemetry system started (CTRL+C to stop){Style.RESET_ALL}")
 
-# DEVELOPMENT ONLY
+# Edit chromium preferences
+preferences_file = open('/home/pi/.config/chromium/Default/Preferences', 'r')
+preferences = json.load(preferences_file)
+preferences_file.close()
+preferences['exit_type'] = 'Normal'
+preferences['exited_cleanly'] = True
+preferences_file = open('/home/pi/.config/chromium/Default/Preferences', 'w')
+json.dump(preferences, preferences_file)
+preferences_file.close()
+
+
+# Start chromium browser in kiosk mode
+chrome = subprocess.Popen(['chromium-browser', '--noerrdialogs', '--disable-infobars', '--kiosk', 'localhost'],
+                          stdout=subprocess.DEVNULL,
+                          stderr=subprocess.DEVNULL)
+
+# DEVELOPMENT ONLY (AUTOMATIC HTML RELOAD)
 # import logging
 # log = logging.getLogger('werkzeug')
 # log.setLevel(logging.ERROR)
@@ -64,9 +87,7 @@ while True:
                 print(f"{Fore.GREEN}[main_thread] Done recovery!{Fore.RESET}")
             else:
                 print(f"{Fore.RED}[main_thread] Recovery failed, quitting...{Fore.RESET}")
-                logger.stop_log()
-                exit(1)
+                terminate(1)
     except KeyboardInterrupt:
         print(f"{Fore.RED}[main_thread] KeyboardInterrupt caught, quitting...{Fore.RESET}")
-        logger.stop_log()
-        break
+        terminate(0)
