@@ -14,7 +14,7 @@ class Sensor(Thread):
     Example: sensor['path/to/variable']
     """
 
-    def __init__(self, name: str, topics: List[str]):
+    def __init__(self, name: str, topics: List[str] = '#'):
         """
         Create a new sensor object with the given name and watching topics.
         :param name: The sensor displayable name.
