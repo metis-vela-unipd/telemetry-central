@@ -19,7 +19,7 @@ class SensorProvider(Thread):
 
     def __init__(self):
         """ Initialize the sensor provider. """
-        Thread.__init__(self, name='sensors_provider', daemon=True)
+        Thread.__init__(self, name='sensor_provider', daemon=True)
         self.__sensors = None
         self.end_setup = Event()
 
