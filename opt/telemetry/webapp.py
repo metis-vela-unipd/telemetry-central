@@ -3,9 +3,14 @@ from flask_socketio import SocketIO
 from threading import Thread, Event
 from colorama import Style
 
+# TODO: Implement websocket communication
+
 
 class Webapp(Thread):
-    """ Thread for the management of the webapp. """
+    """
+    ** DEPRECATED **
+    Thread for the management of the webapp.
+    """
 
     def __init__(self, provider, logger):
         """ Initialize web framework, set provider and routing.  """
