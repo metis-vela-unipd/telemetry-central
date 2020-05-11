@@ -5,7 +5,7 @@ from gpsd import GpsdSensor
 
 SENSORS_LUT = {
     'accel': ['#'],
-    'gps': ['TPV/mode', 'TPV/speed', 'TPV/track'],
+    'gps': ['TPV/lat', 'TPV/lon', 'TPV/mode', 'TPV/speed', 'TPV/track'],
     'wind': ['#']
 }
 
