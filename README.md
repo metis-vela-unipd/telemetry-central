@@ -25,7 +25,6 @@ Repo Folder | R-Pi Folder
 opt/        | /opt
 bin/        | /usr/local/bin
 autostart/  | /etc/xdg/autostart
-default/    | /etc/default
 nginx/      | /etc/nginx
 Pictures/   | /home/pi/Pictures
 
