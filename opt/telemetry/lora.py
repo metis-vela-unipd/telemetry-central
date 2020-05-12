@@ -6,7 +6,6 @@ import serial
 from gpiozero import DigitalInputDevice, DigitalOutputDevice
 from provider import SensorProvider
 
-START_OF_PACKET = '*'
 NULL_DATA = '-'
 SEPARATOR = ' '
 END_OF_PACKET = '\n'
@@ -34,7 +33,7 @@ class LoraTransceiver(Thread):
         :param packet: The packet to send as a list of strings.
         :return: The number of bytes sent.
         """
-        packet_str = START_OF_PACKET
+        packet_str = ''
         for record in packet: packet_str += record + SEPARATOR
         packet_str = packet_str[:-1]
         packet_str += END_OF_PACKET
@@ -61,8 +60,12 @@ class LoraTransceiver(Thread):
             sleep(5)
             lat = self.__provider['gps/TPV/lat']
             lon = self.__provider['gps/TPV/lon']
+            speed = self.__provider['gps/TPV/speed']
+            track = self.__provider['gps/TPV/track']
             packet = [
                 str(lat) if lat else NULL_DATA,
-                str(lon) if lon else NULL_DATA
+                str(lon) if lon else NULL_DATA,
+                str(round(speed, 1)) if speed else NULL_DATA,
+                str(round(track)) if track else NULL_DATA
             ]
-            print(self.__send_packet(packet))
+            self.__send_packet(packet)

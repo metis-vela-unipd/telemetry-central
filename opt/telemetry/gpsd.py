@@ -72,7 +72,7 @@ class GpsdSensor(Sensor):
         self.end_setup.set()
 
         while True:
-            if 'TPV/speed' in self and self['TPV/speed']: self['TPV/speed'] *= MPS_TO_KNOTS
+            if 'TPV/speed' in self and self['TPV/speed']: self._data['TPV', 'speed'] *= MPS_TO_KNOTS
             try:
                 report = self.__session.next()
                 for path in [topic[:-1] for topic in self._topics if topic[-1] == '#']:
