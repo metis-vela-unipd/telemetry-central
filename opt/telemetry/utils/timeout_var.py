@@ -36,9 +36,16 @@ class TimeoutVar:
             self.__timeout_timer = Timer(self.__timeout_sec, setattr, [self, 'value', None])
             self.__timeout_timer.start()
 
+    def __str__(self):
+        """
+        Define the string representation of the variable.
+        :return: The string representation of the value of the object.
+        """
+        return str(self.__value)
+
     def __repr__(self):
         """
         Define the representation of the variable.
-        :return: The string representation of the actual state of the value.
+        :return: The string representation of the actual state of the object.
         """
         return f"<TimeoutVar: {self.__value}>" if self.__value else "Outdated"
