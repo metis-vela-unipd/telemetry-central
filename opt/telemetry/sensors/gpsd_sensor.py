@@ -2,7 +2,7 @@ from typing import List
 from time import sleep
 from colorama import Style, Fore
 from gps import gps, client, WATCH_ENABLE, WATCH_NEWSTYLE, MPS_TO_KNOTS
-from sensor import Sensor
+from sensors import Sensor
 
 
 class GpsdSensor(Sensor):

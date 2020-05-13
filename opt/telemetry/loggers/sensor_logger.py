@@ -3,7 +3,7 @@ from colorama import Fore, Style
 import subprocess
 
 
-class Logger(Thread):
+class SensorLogger(Thread):
     """ Simple class for logging of gps data. """
 
     def __init__(self, provider):

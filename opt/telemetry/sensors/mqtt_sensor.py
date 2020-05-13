@@ -1,7 +1,7 @@
 from typing import List
 from colorama import Style
 import paho.mqtt.client as client
-from sensor import Sensor
+from sensors import Sensor
 
 
 class MqttSensor(Sensor):
