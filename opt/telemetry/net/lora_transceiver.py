@@ -4,7 +4,7 @@ from time import sleep
 from colorama import Style
 import serial
 from gpiozero import DigitalInputDevice, DigitalOutputDevice
-from provider import SensorProvider
+from providers import SensorProvider
 
 NULL_DATA = '-'
 SEPARATOR = ' '

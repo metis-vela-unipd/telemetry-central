@@ -1,7 +1,6 @@
 from threading import Thread, Event
 from colorama import Style, Fore
-from mqtt import MqttSensor
-from gpsd import GpsdSensor
+from sensors import MqttSensor, GpsdSensor
 
 SENSORS_LUT = {
     'accel': ['#'],
