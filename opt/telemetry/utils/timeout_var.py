@@ -42,10 +42,4 @@ class TimeoutVar:
         :return: The string representation of the value of the object.
         """
         return str(self.__value)
-
-    def __repr__(self):
-        """
-        Define the representation of the variable.
-        :return: The string representation of the actual state of the object.
-        """
-        return f"<TimeoutVar: {self.__value}>" if self.__value else "Outdated"
+    __repr__ = __str__

@@ -65,9 +65,10 @@ class DataTree:
             items += [(key, obj.value)] if isinstance(obj, TimeoutVar) else [(key, obj)]
         return items.__iter__()
 
-    def __repr__(self):
+    def __str__(self):
         """
-        Define the representation of the object.
+        Define the string representation of the object.
         :return: The string representation of the current and next tree levels.
         """
-        return f"<DataTree: {self.__dict__}>"
+        return str(self.__dict__)
+    __repr__ = __str__
