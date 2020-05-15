@@ -28,6 +28,7 @@ class MqttSensor(Sensor):
 
     def run(self):
         """ Main routine of the thread. Finish initialization and enter listening loop. """
+        Sensor.run(self)
         self.__client.on_connect = self.__on_connect
         self.__client.on_message = self.__on_message
         self.__client.connect('localhost')
