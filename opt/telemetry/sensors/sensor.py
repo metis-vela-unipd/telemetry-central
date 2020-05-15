@@ -1,5 +1,6 @@
 from threading import Thread, Event, Timer
 from typing import List
+
 import dpath.util as dp
 
 

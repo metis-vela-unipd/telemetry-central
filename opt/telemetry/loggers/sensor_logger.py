@@ -1,6 +1,7 @@
-from threading import Thread, Event
-from colorama import Fore, Style
 import subprocess
+from threading import Thread, Event
+
+from colorama import Fore, Style
 
 
 class SensorLogger(Thread):

@@ -1,9 +1,11 @@
 from threading import Thread, Event
-from typing import List
 from time import sleep
-from colorama import Style
+from typing import List
+
 import serial
+from colorama import Style
 from gpiozero import DigitalInputDevice, DigitalOutputDevice
+
 from providers import SensorProvider
 
 NULL_DATA = '-'

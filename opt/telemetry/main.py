@@ -1,7 +1,8 @@
-from providers import SensorProvider
 from colorama import Fore, Style
+
 from loggers import SensorLogger
 from net import LoraTransceiver
+from providers import SensorProvider
 
 # Start the sensors provider thread
 provider = SensorProvider()

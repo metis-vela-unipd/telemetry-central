@@ -1,8 +1,10 @@
-from typing import List
 from time import sleep
+from typing import List
+
+import dpath.util as dp
 from colorama import Style, Fore
 from gps import gps, client, WATCH_ENABLE, WATCH_NEWSTYLE, MPS_TO_KNOTS
-import dpath.util as dp
+
 from sensors import Sensor
 
 

@@ -1,6 +1,8 @@
 from typing import List
-from colorama import Style
+
 import paho.mqtt.client as client
+from colorama import Style
+
 from sensors import Sensor
 
 
