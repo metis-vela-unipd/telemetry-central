@@ -48,5 +48,3 @@ class SensorProvider(Thread):
             return
         print(f"{Style.DIM}[{self.getName()}] Setup finished{Style.RESET_ALL}")
         self.end_setup.set()
-
-        while True: pass

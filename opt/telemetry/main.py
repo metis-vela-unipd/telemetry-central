@@ -1,8 +1,16 @@
+import signal
+
 from colorama import Fore, Style
 
 from loggers import SensorLogger
 from net import LoraTransceiver
 from providers import SensorProvider
+
+
+def sigint_handler(sig, frame):
+    print(f"{Fore.RED}[main_thread] KeyboardInterrupt caught, quitting...{Fore.RESET}")
+    exit(0)
+
 
 # Start the sensors provider thread
 provider = SensorProvider()
@@ -28,8 +36,6 @@ if not provider.end_setup.isSet() or not logger.end_setup.isSet() or not lora.en
 # Wait all threads to start
 print(f"{Style.BRIGHT}[main_thread] Telemetry system started (CTRL+C to stop){Style.RESET_ALL}")
 
-while True:
-    try: pass
-    except KeyboardInterrupt:
-        print(f"{Fore.RED}[main_thread] KeyboardInterrupt caught, quitting...{Fore.RESET}")
-        exit(0)
+signal.signal(signal.SIGINT, sigint_handler)
+
+signal.pause()

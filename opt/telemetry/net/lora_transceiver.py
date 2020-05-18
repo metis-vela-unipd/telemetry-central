@@ -2,9 +2,9 @@ from threading import Thread, Event
 from time import sleep
 
 import serial
-from serial.threaded import LineReader, ReaderThread
 from colorama import Style
 from gpiozero import DigitalInputDevice, DigitalOutputDevice
+from serial.threaded import LineReader, ReaderThread
 
 NULL_DATA = '-'
 
@@ -71,6 +71,7 @@ class LoraProtocol(LineReader):
     def write_line(self, text):
         super().write_line(text)
         self.untracked_packets += 1
+        print(f"Untracked packets: {self.untracked_packets}")
 
     def handle_line(self, line):
         if line == 'ACK': self.untracked_packets -= self.ack_rate

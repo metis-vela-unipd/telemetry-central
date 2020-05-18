@@ -39,10 +39,6 @@ class SensorLogger(Thread):
         return False
 
     def run(self):
-        """ Finish setup and enter main loop. By now nothing is done in the main loop. """
+        """ Finish setup and enter the main loop. By now nothing is done in the main loop. """
         print(f"{Style.DIM}[{self.getName()}] Setup finished{Style.RESET_ALL}")
         self.end_setup.set()
-
-        # Temporarily do nothing
-        while True:
-            pass

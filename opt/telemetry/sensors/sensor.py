@@ -1,4 +1,4 @@
-from threading import Thread, Event, Timer
+from threading import Thread, Event, Timer, Lock
 
 import dpath.util as dp
 
@@ -24,6 +24,7 @@ class Sensor(Thread):
         """
         super().__init__(name=name, daemon=True)
         self.timers = {}
+        self.timeout_sec = 3
         self.data = {}
         self.topics = topics
         self.end_setup = Event()
@@ -45,15 +46,15 @@ class Sensor(Thread):
         """
         dp.new(self.data, path, value)
         if value is not None:
-            if path in self.timers and not self.timers[path]: self.timers[path].cancel()
-            self.timers[path] = Timer(3, dp.set, [self.data, path, None])
+            if path in self.timers and self.timers[path]: self.timers[path].cancel()
+            self.timers[path] = Timer(self.timeout_sec, dp.set, [self.data, path, None])
             self.timers[path].start()
 
     def __contains__(self, path):
         """
-        Tell if variable is contained in the data tree.
+        Tell if the data tree contains the variable located in the path.
         :param path: The variable path as slash separated keys.
-        :return: True if the variable is contained in the tree, false otherwise.
+        :return: True if the tree contains the variable, false otherwise.
         """
         return bool(dp.search(self.data, path))
 
