@@ -99,7 +99,7 @@ class Sensor(Thread):
         Main routine of the thread. Initialize the tree. This method must be called from the subclasses as the first
         statement of the run routine.
         """
-        wild_paths = [topic[:-2] for topic in self._topics if topic[-1] is '*']
+        wild_paths = [topic[:-1].rstrip('/') for topic in self._topics if topic[-1] is '*']
         wild_paths.sort(key=len)
         for wild_path in wild_paths:
             if wild_path: dp.new(self.__data, wild_path, {})

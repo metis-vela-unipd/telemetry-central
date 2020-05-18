@@ -1,4 +1,5 @@
 from typing import List
+import re
 
 import paho.mqtt.client as client
 from colorama import Style
@@ -16,7 +17,7 @@ class MqttSensor(Sensor):
         :param name: The sensor displayable name.
         :param topics: A list of topics to subscribe to. Each topic follows the MQTT topic name convention.
         """
-        Sensor.__init__(self, name, [topic.strip('/').replace('sensor/', '')[topic.find('/'):] for topic in topics])
+        Sensor.__init__(self, name, [re.sub('^sensor/.*/', '', topic) for topic in topics])
         self.__client = client.Client(name)
 
     def __on_connect(self):
