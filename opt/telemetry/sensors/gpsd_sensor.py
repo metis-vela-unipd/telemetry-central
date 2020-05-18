@@ -1,5 +1,4 @@
 from time import sleep
-from typing import List
 
 import dpath.util as dp
 from colorama import Style, Fore
@@ -11,20 +10,20 @@ from sensors import Sensor
 class GpsdSensor(Sensor):
     """ Class for the communication and collections of gps data coming from the gpsd daemon. """
 
-    def __init__(self, name: str, topics: List[str] = '*'):
+    def __init__(self, name, topics='*'):
         """
         Create a new sensor based on the GPSd protocol. Response sentences are filtered by the topic list passed as
         argument, each topic follows this pattern: "<object>/../<attribute>".
-        Available object and attribute names can be found here: https://gpsd.gitlab.io/gpsd/gpsd_json.html.
+        Available objects and attributes names can be found here: https://gpsd.gitlab.io/gpsd/gpsd_json.html.
         The wildcard '*' can be used to gather all the available data in the sub-path.
         :param name: The sensor displayable name.
         :param topics: A list of topics to watch in response sentences.
         """
-        Sensor.__init__(self, name, topics)
-        self.__session = None
+        super().__init__(name, topics)
+        self.session = None
 
     @staticmethod
-    def __unwrap_report(report: client.dictwrapper) -> dict:
+    def unwrap_report(report: client.dictwrapper) -> dict:
         """
         Unwrap the given report and export the class. Unwrapping means converting a dictionary wrapper to a dictionary.
         :param report: The report as a wrapped dictionary.
@@ -41,17 +40,17 @@ class GpsdSensor(Sensor):
         del unwrapped_dict['class']
         return {report_class: unwrapped_dict}
 
-    def __copy_report(self, report: dict, path: str):
+    def copy_report(self, report: dict, path: str):
         """
         Copy the given gpsd report into the data variable of the sensor in the given path.
         :param report: The report as a gps library client dictwrapper.
         :param path: The destination path of the data tree. The path can contain wildcards.
         """
         for path, value in dp.search(report, path, yielded=True):
-            if dp.search(report, f'{path}/*'): self.__copy_report(report, f'{path}/*')
+            if dp.search(report, f'{path}/*'): self.copy_report(report, f'{path}/*')
             else: self[path] = value
 
-    def __start_daemon(self, tries: int):
+    def start_daemon(self, tries):
         """
         Try to start the gpsd service for the given number of tries by querying it.
         :param tries: The numer of tries after giving up.
@@ -61,7 +60,7 @@ class GpsdSensor(Sensor):
             # TODO: Implement a standard print function
             print(f"{Fore.RED}[{self.getName()}] GPSD is not running, trying staring the service... [{i+1}]{Fore.RESET}")
             try:
-                self.__session = gps(mode=WATCH_ENABLE | WATCH_NEWSTYLE)
+                self.session = gps(mode=WATCH_ENABLE | WATCH_NEWSTYLE)
                 print(f"{Fore.GREEN}[{self.getName()}]GPSD daemon started successfully!{Fore.RESET}")
                 return True
             except ConnectionRefusedError: sleep(5)
@@ -69,10 +68,10 @@ class GpsdSensor(Sensor):
 
     def run(self):
         """ Main routine of the thread. Get and filter gpsd reports. """
-        Sensor.run(self)
-        try: self.__session = gps(mode=WATCH_ENABLE | WATCH_NEWSTYLE)
+        super().run()
+        try: self.session = gps(mode=WATCH_ENABLE | WATCH_NEWSTYLE)
         except ConnectionRefusedError:
-            if not self.__start_daemon(3): return
+            if not self.start_daemon(3): return
 
         print(f"{Style.DIM}[{self.getName()}] Setup finished{Style.RESET_ALL}")
         self.end_setup.set()
@@ -80,8 +79,8 @@ class GpsdSensor(Sensor):
         while True:
             if 'TPV/speed' in self and self['TPV/speed']: self['TPV/speed'] *= MPS_TO_KNOTS
             try:
-                report = GpsdSensor.__unwrap_report(self.__session.next())
-                for topic in self._topics: self.__copy_report(report, topic)
+                report = GpsdSensor.unwrap_report(self.session.next())
+                for topic in self.topics: self.copy_report(report, topic)
             except KeyError: pass
             except StopIteration:
-                if not self.__start_daemon(5): return
+                if not self.start_daemon(5): return

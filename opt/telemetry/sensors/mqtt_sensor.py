@@ -1,4 +1,3 @@
-from typing import List
 import re
 
 import paho.mqtt.client as client
@@ -10,21 +9,21 @@ from sensors import Sensor
 class MqttSensor(Sensor):
     """ Class for the communication and collections of data coming from the Mosquitto MQTT broker. """
 
-    def __init__(self, name: str, topics: List[str] = '*'):
+    def __init__(self, name, topics='*'):
         """
         Create a new sensor based on the MQTT protocol. The client automatically subscribes to the topics passed as
         argument.
         :param name: The sensor displayable name.
         :param topics: A list of topics to subscribe to. Each topic follows the MQTT topic name convention.
         """
-        Sensor.__init__(self, name, [re.sub('^sensor/.*/', '', topic) for topic in topics])
-        self.__client = client.Client(name)
+        super().__init__(name, [re.sub('^sensor/.*/', '', topic) for topic in topics])
+        self.client = client.Client(name)
 
-    def __on_connect(self):
+    def on_connect(self):
         """ Subscribe to all the requested topics. """
-        for topic in self._topics: self.__client.subscribe(topic.replace('*', '#'))
+        for topic in self.topics: self.client.subscribe(topic.replace('*', '#'))
 
-    def __on_message(self, msg):
+    def on_message(self, msg):
         """ Write received data in the correspondent DataTree location. """
         topic = msg.topic.replace('sensor/', '')[msg.topic.find('/'):]
         self[topic] = msg.payload.decode()
@@ -32,11 +31,11 @@ class MqttSensor(Sensor):
     def run(self):
         """ Main routine of the thread. Finish initialization and enter listening loop. """
         Sensor.run(self)
-        self.__client.on_connect = self.__on_connect
-        self.__client.on_message = self.__on_message
-        self.__client.connect('localhost')
+        self.client.on_connect = self.on_connect
+        self.client.on_message = self.on_message
+        self.client.connect('localhost')
 
         print(f"{Style.DIM}[{self.getName()}] Setup finished{Style.RESET_ALL}")
         self.end_setup.set()
 
-        self.__client.loop_forever(retry_first_connection=True)
+        self.client.loop_forever(retry_first_connection=True)

@@ -21,11 +21,11 @@ class SensorProvider(Thread):
 
     def __init__(self):
         """ Initialize the sensor provider. """
-        Thread.__init__(self, name='sensor_provider', daemon=True)
+        super().__init__(name='sensor_provider', daemon=True)
         self.sensors = None
         self.end_setup = Event()
 
-    def __getitem__(self, path: str):
+    def __getitem__(self, path):
         """
         Access sensor data by the given path.
         :param path: The path as a slash separated keys string.

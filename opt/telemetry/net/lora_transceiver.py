@@ -17,20 +17,19 @@ class LoraTransceiver(Thread):
         Initialize the object by giving the provider of sensor data.
         :param provider: The SensorProvider object.
         """
-        Thread.__init__(self, name='lora_transceiver', daemon=True)
-        self.__provider = provider
-        self.__serial = None
-        self.__aux = None
-        self.__m0 = None
-        self.__m1 = None
-        self.reader = None
+        super().__init__(name='lora_transceiver', daemon=True)
+        self.provider = provider
+        self.serial = None
+        self.aux = None
+        self.m0 = None
+        self.m1 = None
         self.tx_rate = 5
         self.protocol = None
         self.end_setup = Event()
 
     def run(self):
         """ Main routine of the thread. Finish initialization, gather and send sensor data. """
-        self.__serial = serial.Serial(
+        self.serial = serial.Serial(
             port='/dev/serial0',
             baudrate=9600,
             parity=serial.PARITY_NONE,
@@ -38,20 +37,20 @@ class LoraTransceiver(Thread):
             bytesize=serial.EIGHTBITS,
             timeout=1
         )
-        self.__aux = DigitalInputDevice(17)
-        self.__m0 = DigitalOutputDevice(22)
-        self.__m1 = DigitalOutputDevice(27)
-        self.protocol = ReaderThread(self.__serial, LoraProtocol).__enter__()
+        self.aux = DigitalInputDevice(17)
+        self.m0 = DigitalOutputDevice(22)
+        self.m1 = DigitalOutputDevice(27)
+        self.protocol = ReaderThread(self.serial, LoraProtocol).__enter__()
 
         print(f"{Style.DIM}[{self.getName()}] Setup finished{Style.RESET_ALL}")
         self.end_setup.set()
 
         while True:
             sleep(self.tx_rate)
-            lat = self.__provider['gps/TPV/lat']
-            lon = self.__provider['gps/TPV/lon']
-            speed = self.__provider['gps/TPV/speed']
-            track = self.__provider['gps/TPV/track']
+            lat = self.provider['gps/TPV/lat']
+            lon = self.provider['gps/TPV/lon']
+            speed = self.provider['gps/TPV/speed']
+            track = self.provider['gps/TPV/track']
             line = LineBuilder() \
                 .append(str(lat) if lat is not None else NULL_DATA) \
                 .append(str(lon) if lon is not None else NULL_DATA) \
