@@ -1,4 +1,4 @@
-from threading import Thread, Event, Timer
+from threading import Thread, Event
 from time import sleep
 
 import serial
@@ -60,7 +60,6 @@ class LoraTransceiver(Thread):
                 .append(str(round(speed, 1)) if speed is not None else NULL_DATA) \
                 .append(str(round(track)) if track is not None else NULL_DATA)
             self.protocol.write_line(line.build())
-            print(self.protocol)
 
 
 class LoraProtocol(LineReader):
