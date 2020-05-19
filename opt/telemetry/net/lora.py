@@ -1,4 +1,4 @@
-from threading import Thread, Event
+from threading import Thread, Event, Timer
 from time import sleep
 
 import serial
@@ -9,6 +9,7 @@ from serial.threaded import LineReader, ReaderThread
 NULL_DATA = '-'
 
 # TODO: Add synchronization mechanism
+# TODO: Mode change and AUX waiting
 
 
 class LoraTransceiver(Thread):
@@ -63,41 +64,38 @@ class LoraTransceiver(Thread):
 
 
 class LoraProtocol(LineReader):
-    def __init__(self, ack_rate=5, lost_timeout=2):
+    def __init__(self, ack_rate=5):
         super().__init__()
-        self.sent_packets = 0
-        self.untracked_packets = 0
-        self.received_packets = 0
-        self.lost_packets = 0
+        self.sent = 0
+        self.untracked = 0
+        self.delivered = 0
+        self.lost = 0
         self.ack_rate = ack_rate
-        self.lost_timeout = lost_timeout
-
-    def connection_made(self, transport):
-        super().connection_made(transport)
 
     def write_line(self, text):
         super().write_line(text)
-        self.sent_packets += 1
-        if self.untracked_packets >= self.lost_timeout * self.ack_rate:
-            self.lost_packets += 1
-        else: self.untracked_packets += 1
+        self.sent += 1
+        if self.untracked >= self.ack_rate: self.lost += 1
+        else: self.untracked += 1
 
     def handle_line(self, line):
         line = LoraMessage.parse(line)
-        if line == 'ACK':
-            self.received_packets += self.ack_rate
-            if self.untracked_packets > self.ack_rate:
-                self.lost_packets += self.untracked_packets - self.ack_rate
-            self.untracked_packets = 0
+        if line[0] == 'ACK':
+            if self.ack_rate > self.untracked:
+                self.delivered += self.untracked
+                self.untracked = 0
+            else:
+                self.delivered += self.ack_rate
+                self.untracked -= self.ack_rate
 
     def connection_lost(self, exc):
         pass
 
     def __str__(self):
-        return f"Sent packets: {self.sent_packets}\n" \
-               f"Untracked packets: {self.untracked_packets}\n" \
-               f"Received packets: {self.received_packets}\n" \
-               f"Lost packets: {self.lost_packets}\n"
+        return f"Sent packets: {self.sent}\n" \
+               f"Unacknowledged packets: {self.untracked}\n" \
+               f"Acknowledged packets: {self.delivered}\n" \
+               f"Lost packets: {self.lost}\n"
     __repr__ = __str__
 
 
@@ -116,4 +114,4 @@ class LoraMessage:
 
     @staticmethod
     def parse(message, separator=' '):
-        return message.split(separator) if separator in message else message
+        return message.split(separator)

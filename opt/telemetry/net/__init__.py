@@ -1,2 +1,2 @@
-from .lora_transceiver import *
-from .websocket_server import *
+from .lora import *
+from .websocket import *
