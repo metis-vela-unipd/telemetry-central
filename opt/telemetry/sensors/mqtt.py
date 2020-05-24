@@ -9,10 +9,9 @@ from sensors import Sensor
 class MqttSensor(Sensor):
     """ Class for the communication and collections of data coming from the Mosquitto MQTT broker. """
 
-    def __init__(self, name, topics='*'):
-        """
-        Create a new sensor based on the MQTT protocol. The client automatically subscribes to the topics passed as
-        argument.
+    def __init__(self, name=None, topics='*'):
+        """ Create a new sensor based on the MQTT protocol. The client automatically subscribes to the
+        topics passed as argument. \n
         :param name: The sensor displayable name.
         :param topics: A list of topics to subscribe to. Each topic follows the MQTT topic name convention.
         """
@@ -29,7 +28,7 @@ class MqttSensor(Sensor):
         self[topic] = msg.payload.decode()
 
     def run(self):
-        """ Main routine of the thread. Finish initialization and enter listening loop. """
+        """ Main routine of the thread. Finish initialization and enter the listening loop. """
         Sensor.run(self)
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message

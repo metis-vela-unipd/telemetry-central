@@ -13,14 +13,13 @@ NULL_DATA = '-'
 
 
 class LoraTransceiver(Thread):
-    """ Class communicates via UART interface with an attached LoRa transceiver. """
+    """ Communicate via UART interface with an attached LoRa transceiver. """
 
-    def __init__(self, provider):
-        """
-        Initialize the object by giving the provider of sensor data.
+    def __init__(self, provider, name=None):
+        """ Initialize the object by giving the provider of sensor data. \n
         :param provider: The SensorProvider object.
         """
-        super().__init__(name='lora_transceiver', daemon=True)
+        super().__init__(name=name, daemon=True)
         self.provider = provider
         self.serial = None
         self.aux = None

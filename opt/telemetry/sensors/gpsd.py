@@ -10,12 +10,11 @@ from sensors import Sensor
 class GpsdSensor(Sensor):
     """ Class for the communication and collections of gps data coming from the gpsd daemon. """
 
-    def __init__(self, name, topics='*'):
-        """
-        Create a new sensor based on the GPSd protocol. Response sentences are filtered by the topic list passed as
-        argument, each topic follows this pattern: "<object>/../<attribute>".
+    def __init__(self, name=None, topics='*'):
+        """ Create a new sensor based on the GPSd protocol. Filter response sentences by the topic list passed
+        as argument, each topic follows this pattern: "<object>/.../<attribute>".
         Available objects and attributes names can be found here: https://gpsd.gitlab.io/gpsd/gpsd_json.html.
-        The wildcard '*' can be used to gather all the available data in the sub-path.
+        The wildcard '*' can be used to gather all the available data in the sub-path.\n
         :param name: The sensor displayable name.
         :param topics: A list of topics to watch in response sentences.
         """
@@ -23,13 +22,13 @@ class GpsdSensor(Sensor):
         self.session = None
 
     @staticmethod
-    def unwrap_report(report: client.dictwrapper) -> dict:
-        """
-        Unwrap the given report and export the class. Unwrapping means converting a dictionary wrapper to a dictionary.
+    def unwrap_report(report):
+        """ Unwrap the given report and export the class. Unwrapping means converting a dictionary
+        wrapper into a dictionary. \n
         :param report: The report as a wrapped dictionary.
         :return: A dictionary tree with the report class as the root and the rest as a sub-tree.
         """
-        def unwrap(wrapped_dict: client.dictwrapper):
+        def unwrap(wrapped_dict):
             output = {}
             for attr in wrapped_dict:
                 if not isinstance(wrapped_dict[attr], client.dictwrapper): output[attr] = wrapped_dict[attr]
@@ -40,9 +39,8 @@ class GpsdSensor(Sensor):
         del unwrapped_dict['class']
         return {report_class: unwrapped_dict}
 
-    def copy_report(self, report: dict, path: str):
-        """
-        Copy the given gpsd report into the data variable of the sensor in the given path.
+    def copy_report(self, report, path):
+        """ Copy the given gpsd report into the data variable of the sensor in the given path. \n
         :param report: The report as a gps library client dictwrapper.
         :param path: The destination path of the data tree. The path can contain wildcards.
         """
@@ -51,9 +49,8 @@ class GpsdSensor(Sensor):
             else: self[path] = value
 
     def start_daemon(self, tries):
-        """
-        Try to start the gpsd service for the given number of tries by querying it.
-        :param tries: The numer of tries after giving up.
+        """ Try to start the gpsd service for the given number of tries by querying it. \n
+        :param tries: The number of tries after giving up.
         :return: True if the daemon has been started successfully, false otherwise.
         """
         for i in range(tries):
