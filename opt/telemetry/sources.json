@@ -1,0 +1,22 @@
+{
+  "sensor_provider": {
+    "gps": {
+      "protocol": "gpsd",
+      "topics": {
+        "TPV/lat": { "timeout": 3 },
+        "TPV/lon": { "timeout": 3 },
+        "TPV/mode": { "timeout": 3 },
+        "TPV/speed": { "timeout": 3 },
+        "TPV/track": { "timeout": 3 }
+      }
+    },
+    "accel": {
+      "protocol": "mqtt",
+      "topics": { "*": { "timeout": 3 } }
+    },
+    "wind": {
+      "protocol": "mqtt",
+      "topics": { "*": { "timeout": 3 } }
+    }
+  }
+}
