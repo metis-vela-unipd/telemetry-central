@@ -28,6 +28,7 @@ class LoraTransceiver(Thread):
         self.tx_rate = 5
         self.protocol = None
         self.end_setup = Event()
+        self.start()
 
     def run(self):
         """ Main routine of the thread. Finish initialization, gather and send sensor data. """
@@ -49,10 +50,10 @@ class LoraTransceiver(Thread):
 
         while True:
             sleep(self.tx_rate)
-            lat = self.provider['gps/TPV/lat']
-            lon = self.provider['gps/TPV/lon']
-            speed = self.provider['gps/TPV/speed']
-            track = self.provider['gps/TPV/track']
+            lat = self.provider['gps']['TPV/lat']
+            lon = self.provider['gps']['TPV/lon']
+            speed = self.provider['gps']['TPV/speed']
+            track = self.provider['gps']['TPV/track']
             line = LoraMessage() \
                 .append(str(lat) if lat is not None else NULL_DATA) \
                 .append(str(lon) if lon is not None else NULL_DATA) \

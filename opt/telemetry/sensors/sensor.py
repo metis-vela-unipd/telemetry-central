@@ -1,6 +1,7 @@
-from threading import Thread, Event, Timer, Lock
+from threading import Thread, Event, Timer
 
 import dpath.util as dp
+import pandas as pd
 
 
 class Sensor(Thread):
@@ -26,6 +27,11 @@ class Sensor(Thread):
         self.data = {}
         self.topics = topics
         self.end_setup = Event()
+        wild_paths = [topic[:-1].rstrip('/') for topic in self.topics if topic[-1] is '*']
+        wild_paths.sort(key=len)
+        for wild_path in wild_paths:
+            if wild_path: dp.new(self.data, wild_path, {})
+        for path in [topic for topic in self.topics if topic[-1] is not '*']: dp.new(self.data, path, None)
 
     def get(self, path):
         """ Return the item value correspondent to the given path. \n
@@ -55,42 +61,32 @@ class Sensor(Thread):
 
     def keys(self):
         """ Return the keys of the dictionary tree. \n
-        :return: A KeysView object of the sensor data variable.
+        :return: A list of the sensor data variable keys.
         """
-        return self.data.keys()
+        return list(pd.json_normalize(self.data, sep='/').keys())
 
     def items(self):
         """ Return the items of the dictionary tree. \n
         :return: An ItemsView object of the sensor data variable.
         """
-        return self.data.items()
+        return [(key, self[key]) for key in self]
 
     def __iter__(self):
         """ Return an iterator for the sensor. \n
         :return: An Iterator object of the sensor data variable.
         """
-        return self.data.__iter__()
+        return self.keys().__iter__()
 
     def __len__(self):
         """ Return the length of the sensor data. \n
         :return: An integer representing the length of the sensor data variable.
         """
-        return len(self.data)
+        return len(self.keys())
 
     def __str__(self):
         """ Define the string representation of the sensor. \n
         :return: A string representing the data variable of the sensor.
         """
         return f'<{__name__}: {str(self.data)}>'
-
     __repr__ = __str__
 
-    def run(self):
-        """ Main routine of the thread. Initialize the tree. This method must be called from the subclasses
-        as the first statement of the run routine.
-        """
-        wild_paths = [topic[:-1].rstrip('/') for topic in self.topics if topic[-1] is '*']
-        wild_paths.sort(key=len)
-        for wild_path in wild_paths:
-            if wild_path: dp.new(self.data, wild_path, {})
-        for path in [topic for topic in self.topics if topic[-1] is not '*']: dp.new(self.data, path, None)

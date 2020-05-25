@@ -1,49 +1,43 @@
-from threading import Thread, Event
+import json
 
-import dpath.util as dp
 from colorama import Style, Fore
 
 from sensors import MqttSensor, GpsdSensor
-
-SENSORS_LUT = {
-    'accel': ['*'],
-    'gps': ['TPV/lat', 'TPV/lon', 'TPV/mode', 'TPV/speed', 'TPV/track'],
-    'wind': ['*']
-}
+from providers import Provider
 
 
-class SensorProvider(Thread):
-    """
-    Class for the gathering of data coming through sensors. Each sensor can be accessed by classical python array
+class SensorProvider(Provider):
+    """ Class for the gathering of data coming through sensors. Each sensor can be accessed by classical python array
     access with square brackets. Sensor data can be accessed with paths that has the sensor name as the first key. \n
     Example: sensor_provider['sensor_name/path/to/variable']
     """
 
-    def __init__(self):
+    def __init__(self, name=None):
         """ Initialize the sensor provider. """
-        super().__init__(name='sensor_provider', daemon=True)
-        self.sensors = None
-        self.end_setup = Event()
+        super().__init__(name)
+        self.start()
 
-    def __getitem__(self, path):
+    @staticmethod
+    def init_sensor(protocol, name=None, topics='*'):
+        """ Initialize the sensor that handles communications for the given protocol. \n
+        :param protocol: The protocol name. Supported protocols are 'mqtt' and 'gpsd'.
+        :param name: The display name of the sensor.
+        :param topics: The topics list.
+        :return: An instance of the newly created sensor.
         """
-        Access sensor data by the given path.
-        :param path: The path as a slash separated keys string.
-        :return: The item correspondent to the path.
-        """
-        return dp.get(self.sensors, path)
+        if protocol == 'gpsd': return GpsdSensor(name, [topic for topic in topics])
+        elif protocol == 'mqtt': return MqttSensor(name, [f'sensor/{name}/{topic}' for topic in topics])
 
     def run(self):
         """ Main routine of the thread. Initialize and start sensors. """
-        self.sensors = {
-            'accel': MqttSensor('accel', [f'sensor/accel/{topic}' for topic in SENSORS_LUT['accel']]),
-            'gps': GpsdSensor('gps', SENSORS_LUT['gps']),
-            'wind': MqttSensor('wind', [f'sensor/wind/{topic}' for topic in SENSORS_LUT['wind']])
-        }
-        for sensor in self.sensors.values(): sensor.start()
-        for sensor in self.sensors.values(): sensor.end_setup.wait(timeout=20)
+        with open('sources.json') as sources_file:
+            sensors = json.load(sources_file)['sensor_provider']
+        for sensor in sensors:
+            self.sources[sensor['name']] = SensorProvider.init_sensor(sensor['protocol'], sensor['name'], sensor['topics'])
 
-        if False in [sensor.end_setup.isSet() for sensor in self.sensors.values()]:
+        for sensor in self.sources.values(): sensor.end_setup.wait(timeout=20)
+
+        if False in [sensor.end_setup.isSet() for sensor in self.sources.values()]:
             print(f"{Fore.RED}[{self.getName()}] Sensors initialization failed, quitting...")
             return
         print(f"{Style.DIM}[{self.getName()}] Setup finished{Style.RESET_ALL}")

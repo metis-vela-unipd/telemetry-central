@@ -20,6 +20,7 @@ class GpsdSensor(Sensor):
         """
         super().__init__(name, topics)
         self.session = None
+        self.start()
 
     @staticmethod
     def unwrap_report(report):
@@ -65,7 +66,6 @@ class GpsdSensor(Sensor):
 
     def run(self):
         """ Main routine of the thread. Get and filter gpsd reports. """
-        super().run()
         try: self.session = gps(mode=WATCH_ENABLE | WATCH_NEWSTYLE)
         except ConnectionRefusedError:
             if not self.start_daemon(3): return

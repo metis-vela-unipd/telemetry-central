@@ -17,6 +17,9 @@ class MqttSensor(Sensor):
         """
         super().__init__(name, [re.sub('^sensor/.*/', '', topic) for topic in topics])
         self.client = client.Client(name)
+        self.client.on_connect = self.on_connect
+        self.client.on_message = self.on_message
+        self.start()
 
     def on_connect(self):
         """ Subscribe to all the requested topics. """
@@ -29,9 +32,6 @@ class MqttSensor(Sensor):
 
     def run(self):
         """ Main routine of the thread. Finish initialization and enter the listening loop. """
-        Sensor.run(self)
-        self.client.on_connect = self.on_connect
-        self.client.on_message = self.on_message
         self.client.connect('localhost')
 
         print(f"{Style.DIM}[{self.getName()}] Setup finished{Style.RESET_ALL}")
