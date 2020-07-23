@@ -15,33 +15,33 @@ class Sensor(Thread):
     Example: sensor['path/to/variable']
     """
 
-    def __init__(self, name=None, topics='*'):
+    def __init__(self, name, filters):
         """ Create a new sensor object with the given name and watching topics. \n
         :param name: The sensor displayable name.
-        :param topics: A list of topics to watch. The wildcard '*' can be used to gather all available data in the
+        :param filters: A list of topics to watch. The wildcard '*' can be used to gather all available data in the
                        specified subtree.
         """
         super().__init__(name=name, daemon=True)
+        self.name = name
         self.timers = {}
         self.timeout_sec = 3
         self.data = {}
-        self.topics = topics
+        self.filters = filters
         self.end_setup = Event()
-        wild_paths = [topic[:-1].rstrip('/') for topic in self.topics if topic[-1] is '*']
+        wild_paths = [path[:-1].rstrip('/') for path in self.filters if path[-1] is '*']
         wild_paths.sort(key=len)
         for wild_path in wild_paths:
             if wild_path: dp.new(self.data, wild_path, {})
-        for path in [topic for topic in self.topics if topic[-1] is not '*']: dp.new(self.data, path, None)
+        for path in [filter for filter in self.filters if filter[-1] is not '*']: dp.new(self.data, path, None)
 
-    def get(self, path):
+    def __getitem__(self, path):
         """ Return the item value correspondent to the given path. \n
         :param path: The path as a string composed by slash separated keys.
         :return: The current value of the variable or None, if the value is outdated.
         """
         return dp.get(self.data, path)
-    __getitem__ = get
 
-    def __setitem__(self, path, value):
+    def set(self, path, value):
         """ Set the value at the variable correspondent to the given path. This action will restart the reset timer. \n
         :param path: The path as a string composed by slash separated keys.
         :param value: The value to set to the variable.
@@ -90,3 +90,8 @@ class Sensor(Thread):
         return f'<{__name__}: {str(self.data)}>'
     __repr__ = __str__
 
+    def run(self):
+        """ Method that needs to be implemented from subclasses. """
+        raise NotImplementedError
+
+    def stop(self): pass

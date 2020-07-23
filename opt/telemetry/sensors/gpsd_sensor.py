@@ -1,25 +1,25 @@
 from time import sleep
 
 import dpath.util as dp
-from colorama import Style, Fore
+from colorama import Fore
 from gps import gps, client, WATCH_ENABLE, WATCH_NEWSTYLE, MPS_TO_KNOTS
 
-from sensors import Sensor
+from .sensor import Sensor
 
 
 class GpsdSensor(Sensor):
     """ Class for the communication and collections of gps data coming from the gpsd daemon. """
 
-    def __init__(self, name=None, topics='*'):
+    def __init__(self, name, filters):
         """ Create a new sensor based on the GPSd protocol. Filter response sentences by the topic list passed
         as argument, each topic follows this pattern: "<object>/.../<attribute>".
         Available objects and attributes names can be found here: https://gpsd.gitlab.io/gpsd/gpsd_json.html.
         The wildcard '*' can be used to gather all the available data in the sub-path.\n
         :param name: The sensor displayable name.
-        :param topics: A list of topics to watch in response sentences.
+        :param filters: A list of topics to watch in response sentences.
         """
-        super().__init__(name, topics)
-        self.session = None
+        super().__init__(name, filters)
+        self.session = gps(mode=WATCH_ENABLE | WATCH_NEWSTYLE)
         self.start()
 
     @staticmethod
@@ -47,7 +47,7 @@ class GpsdSensor(Sensor):
         """
         for path, value in dp.search(report, path, yielded=True):
             if dp.search(report, f'{path}/*'): self.copy_report(report, f'{path}/*')
-            else: self[path] = value
+            else: self.set(path, value)
 
     def start_daemon(self, tries):
         """ Try to start the gpsd service for the given number of tries by querying it. \n
@@ -66,18 +66,11 @@ class GpsdSensor(Sensor):
 
     def run(self):
         """ Main routine of the thread. Get and filter gpsd reports. """
-        try: self.session = gps(mode=WATCH_ENABLE | WATCH_NEWSTYLE)
-        except ConnectionRefusedError:
-            if not self.start_daemon(3): return
-
-        print(f"{Style.DIM}[{self.getName()}] Setup finished{Style.RESET_ALL}")
-        self.end_setup.set()
-
         while True:
-            if 'TPV/speed' in self and self['TPV/speed']: self['TPV/speed'] *= MPS_TO_KNOTS
+            if 'TPV/speed' in self and self['TPV/speed']: self.set('TPV/speed', self['TPV/speed'] * MPS_TO_KNOTS)
             try:
                 report = GpsdSensor.unwrap_report(self.session.next())
-                for topic in self.topics: self.copy_report(report, topic)
+                for path in self.filters: self.copy_report(report, path)
             except KeyError: pass
             except StopIteration:
                 if not self.start_daemon(5): return
