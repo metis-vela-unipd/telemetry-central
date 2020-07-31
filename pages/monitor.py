@@ -2,6 +2,7 @@ import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
+from datetime import datetime
 
 from app import app, data
 
@@ -10,7 +11,7 @@ FOOTER_STYLE = {
     'left': '0',
     'bottom': '0',
     'width': '100%',
-    'height': '60px'
+    'height': '150px'
 }
 
 gps_speed_text = html.H1('-', style={
@@ -57,6 +58,10 @@ layout = html.Div([
     dbc.Row(dbc.Col(html.H2("WIND", className='text-center text-bold'))),
     dbc.Row([dbc.Col(wind_speed_text, width=10), dbc.Col(knots_text, width=2)]),
     dbc.Row([dbc.Col(wind_direction_text, width=10), dbc.Col(degrees_text, width=2)]),
+    html.Div(
+        html.H1('', className='text-center', style={'fontSize': '113px'}, id='clock-text'),
+        style=FOOTER_STYLE,
+        className='border-top'),
     dcc.Interval(
         id='update-timer',
         interval=500
@@ -67,22 +72,32 @@ layout = html.Div([
 @app.callback(Output('gps-speed-text', 'children'),
               [Input('update-timer', 'n_intervals')])
 def update_gps_speed(n):
-    return str(round(float(data['sensor/gps0/speed']), 1)) if 'sensor/gps0/speed' in data else '-'
+    topic = 'sensor/gps0/speed'
+    return str(round(float(data[topic]), 1)) if topic in data and data[topic] is not None else '-'
 
 
 @app.callback(Output('gps-track-text', 'children'),
               [Input('update-timer', 'n_intervals')])
 def update_gps_track(n):
-    return str(round(float(data['sensor/gps0/track']), 1)) if 'sensor/gps0/track' in data else '-'
+    topic = 'sensor/gps0/track'
+    return str(round(float(data[topic]), 1)) if topic in data and data[topic] is not None else '-'
 
 
 @app.callback(Output('wind-speed-text', 'children'),
               [Input('update-timer', 'n_intervals')])
 def update_wind_speed(n):
-    return str(round(float(data['sensor/wind0/speed']), 1)) if 'sensor/wind0/speed' in data else '-'
+    topic = 'sensor/wind0/speed'
+    return str(round(float(data[topic]), 1)) if topic in data and data[topic] is not None else '-'
 
 
 @app.callback(Output('wind-direction-text', 'children'),
               [Input('update-timer', 'n_intervals')])
 def update_wind_direction(n):
-    return str(round(float(data['sensor/wind0/direction']))) if 'sensor/wind0/direction' in data else '-'
+    topic = 'sensor/wind0/direction'
+    return str(round(float(data[topic]))) if topic in data and data[topic] is not None else '-'
+
+
+@app.callback(Output('clock-text', 'children'),
+              [Input('update-timer', 'n_intervals')])
+def update_clock(n):
+    return datetime.now().strftime("%H:%M:%S")

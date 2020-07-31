@@ -3,8 +3,9 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 from paho.mqtt.client import Client
 
-from app import app, data
+from app import app, data, timeouts
 from pages import monitor, dashboard
+from threading import Timer
 
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
@@ -26,7 +27,15 @@ def display_page(pathname):
 
 def on_message(client, userdata, message):
     data[message.topic] = message.payload.decode()
+    if message.topic in timeouts:
+        timeouts[message.topic].cancel()
+    timeouts[message.topic] = Timer(10, reset_data, [message.topic])
+    timeouts[message.topic].start()
     print(f'Receive! Topic: {message.topic}; Value: {message.payload.decode()}')
+
+
+def reset_data(key):
+    data[key] = None
 
 
 if __name__ == '__main__':
