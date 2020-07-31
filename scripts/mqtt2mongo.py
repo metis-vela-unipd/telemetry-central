@@ -18,7 +18,7 @@ def on_message(client, userdata, message):
 
 
 mongo = MongoClient()
-mqtt = Client('mqtt2mongodb')
+mqtt = Client('mongodb')
 mqtt.on_message = on_message
 mqtt.connect('localhost')
 mqtt.subscribe('#')
