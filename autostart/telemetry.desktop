@@ -1,5 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Telemetry
-Exec=telemetry --log
-Comment[en_US]=Start Metis Telemetry System
